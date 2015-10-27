@@ -21,8 +21,8 @@ anything in this file.
 include "settings.php";
 
 // Keep #'s reasonable.
-$min_thickness = max(1,$min_thickness);
-$max_thickness = min(20,$max_thickness);
+$min_thickness = max(1, $min_thickness);
+$max_thickness = min(20, $max_thickness);
 // Make radii into height/width
 $min_radius *= 2;
 $max_radius *= 2;
@@ -30,90 +30,90 @@ $max_radius *= 2;
 $contrast = 255 * ($contrast / 100.0);
 $o_contrast = 1.3 * $contrast;
 
-$width = 15 * imagefontwidth (5);
-$height = 2.5 * imagefontheight (5);
-$image = imagecreatetruecolor ($width, $height);
+$width = 15 * imagefontwidth(5);
+$height = 2.5 * imagefontheight(5);
+$image = imagecreatetruecolor($width, $height);
 imagealphablending($image, true);
-$black = imagecolorallocatealpha($image,0,0,0,0);
+$black = imagecolorallocatealpha($image, 0, 0, 0, 0);
 
 // Build the  validation string
-$max = strlen($acceptedChars)-1;
+$max = strlen($acceptedChars) - 1;
 $password = NULL;
-for($i=0; $i < $stringlength; $i++) {
-	$cnum[$i] = $acceptedChars{mt_rand(0, $max)};
-	$password .= $cnum[$i];
+for ($i = 0; $i < $stringlength; $i++) {
+    $cnum[$i] = $acceptedChars{mt_rand(0, $max)};
+    $password .= $cnum[$i];
 }
 
 // Add string to image
-$rotated = imagecreatetruecolor (70, 70);
+$rotated = imagecreatetruecolor(70, 70);
 $x = 0;
 for ($i = 0; $i < $stringlength; $i++) {
-	$buffer = imagecreatetruecolor (20, 20);
-	$buffer2 = imagecreatetruecolor (40, 40);
-	
-	// Get a random color
-	$red = mt_rand(0,255);
-	$green = mt_rand(0,255);
-	$blue = 255 - sqrt($red * $red + $green * $green);
-	$color = imagecolorallocate ($buffer, $red, $green, $blue);
+    $buffer = imagecreatetruecolor(20, 20);
+    $buffer2 = imagecreatetruecolor(40, 40);
 
-	// Create character
-	imagestring($buffer, 5, 0, 0, $cnum[$i], $color);
+    // Get a random color
+    $red = mt_rand(0, 255);
+    $green = mt_rand(0, 255);
+    $blue = 255 - sqrt($red * $red + $green * $green);
+    $color = imagecolorallocate($buffer, $red, $green, $blue);
 
-	// Resize character
-	imagecopyresized ($buffer2, $buffer, 0, 0, 0, 0, 25 + mt_rand(0,12), 25 + mt_rand(0,12), 20, 20);
+    // Create character
+    imagestring($buffer, 5, 0, 0, $cnum[$i], $color);
 
-	// Rotate characters a little
-	$rotated = imagerotate($buffer2, mt_rand(-25, 25),imagecolorallocatealpha($buffer2,0,0,0,0)); 
-	imagecolortransparent ($rotated, imagecolorallocatealpha($rotated,0,0,0,0));
+    // Resize character
+    imagecopyresized($buffer2, $buffer, 0, 0, 0, 0, 25 + mt_rand(0, 12), 25 + mt_rand(0, 12), 20, 20);
 
-	// Move characters around a little
-	$y = mt_rand(1, 3);
-	$x += mt_rand(2, 6); 
-	imagecopymerge ($image, $rotated, $x, $y, 0, 0, 40, 40, 100);
-	$x += 22;
+    // Rotate characters a little
+    $rotated = imagerotate($buffer2, mt_rand(-25, 25), imagecolorallocatealpha($buffer2, 0, 0, 0, 0));
+    imagecolortransparent($rotated, imagecolorallocatealpha($rotated, 0, 0, 0, 0));
 
-	imagedestroy ($buffer); 
-	imagedestroy ($buffer2); 
+    // Move characters around a little
+    $y = mt_rand(1, 3);
+    $x += mt_rand(2, 6);
+    imagecopymerge($image, $rotated, $x, $y, 0, 0, 40, 40, 100);
+    $x += 22;
+
+    imagedestroy($buffer);
+    imagedestroy($buffer2);
 }
 
 // Draw polygons
 if ($num_polygons > 0) for ($i = 0; $i < $num_polygons; $i++) {
-	$vertices = array (
-		mt_rand(-0.25*$width,$width*1.25),mt_rand(-0.25*$width,$width*1.25),
-		mt_rand(-0.25*$width,$width*1.25),mt_rand(-0.25*$width,$width*1.25),
-		mt_rand(-0.25*$width,$width*1.25),mt_rand(-0.25*$width,$width*1.25)
-	);
-	$color = imagecolorallocatealpha ($image, mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), $object_alpha);
-	imagefilledpolygon($image, $vertices, 3, $color);  
+    $vertices = array(
+        mt_rand(-0.25 * $width, $width * 1.25), mt_rand(-0.25 * $width, $width * 1.25),
+        mt_rand(-0.25 * $width, $width * 1.25), mt_rand(-0.25 * $width, $width * 1.25),
+        mt_rand(-0.25 * $width, $width * 1.25), mt_rand(-0.25 * $width, $width * 1.25)
+    );
+    $color = imagecolorallocatealpha($image, mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), $object_alpha);
+    imagefilledpolygon($image, $vertices, 3, $color);
 }
 
 // Draw random circles
 if ($num_ellipses > 0) for ($i = 0; $i < $num_ellipses; $i++) {
-	$x1 = mt_rand(0,$width);
-	$y1 = mt_rand(0,$height);
-	$color = imagecolorallocatealpha ($image, mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), $object_alpha);
+    $x1 = mt_rand(0, $width);
+    $y1 = mt_rand(0, $height);
+    $color = imagecolorallocatealpha($image, mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), $object_alpha);
 //	$color = imagecolorallocate($image, mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), mt_rand(0,$o_contrast));
-	imagefilledellipse($image, $x1, $y1, mt_rand($min_radius,$max_radius), mt_rand($min_radius,$max_radius), $color);  
+    imagefilledellipse($image, $x1, $y1, mt_rand($min_radius, $max_radius), mt_rand($min_radius, $max_radius), $color);
 }
 
 // Draw random lines
 if ($num_lines > 0) for ($i = 0; $i < $num_lines; $i++) {
-	$x1 = mt_rand(-$width*0.25,$width*1.25);
-	$y1 = mt_rand(-$height*0.25,$height*1.25);
-	$x2 = mt_rand(-$width*0.25,$width*1.25);
-	$y2 = mt_rand(-$height*0.25,$height*1.25);
-	$color = imagecolorallocatealpha ($image, mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), $object_alpha);
-	imagesetthickness ($image, mt_rand($min_thickness,$max_thickness));
-	imageline($image, $x1, $y1, $x2, $y2 , $color);  
+    $x1 = mt_rand(-$width * 0.25, $width * 1.25);
+    $y1 = mt_rand(-$height * 0.25, $height * 1.25);
+    $x2 = mt_rand(-$width * 0.25, $width * 1.25);
+    $y2 = mt_rand(-$height * 0.25, $height * 1.25);
+    $color = imagecolorallocatealpha($image, mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), $object_alpha);
+    imagesetthickness($image, mt_rand($min_thickness, $max_thickness));
+    imageline($image, $x1, $y1, $x2, $y2, $color);
 }
 
 // Draw random dots
 if ($num_dots > 0) for ($i = 0; $i < $num_dots; $i++) {
-	$x1 = mt_rand(0,$width);
-	$y1 = mt_rand(0,$height);
-	$color = imagecolorallocatealpha ($image, mt_rand(0,$o_contrast), mt_rand(0,$o_contrast), mt_rand(0,$o_contrast),$object_alpha);
-	imagesetpixel($image, $x1, $y1, $color);
+    $x1 = mt_rand(0, $width);
+    $y1 = mt_rand(0, $height);
+    $color = imagecolorallocatealpha($image, mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), mt_rand(0, $o_contrast), $object_alpha);
+    imagesetpixel($image, $x1, $y1, $color);
 }
 
 session_start();
@@ -122,6 +122,6 @@ $_SESSION['string'] = $password;
 header('Content-type: image/png');
 imagepng($image);
 imagedestroy($image);
-  
+
 ?> 
 

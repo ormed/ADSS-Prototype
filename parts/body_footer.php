@@ -1,7 +1,7 @@
 </div>
-			<!-- /.container-fluid -->
-		</div>
-		<!-- /#page-wrapper -->
+<!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->
 
-	</div>
-	<!-- /#wrapper -->
+</div>
+<!-- /#wrapper -->

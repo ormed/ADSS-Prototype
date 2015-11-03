@@ -4,61 +4,7 @@ include_once 'parts/header.php';
 include_once 'database/Database.php';
 include_once 'database/Customer.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	include_once 'parts/body_header.php';
 
-	$db = new Database();
-	$results = Customer::getCustomersDetails($_POST['cust_id'], $_POST['first_name'], $_POST['last_name'], $db);
-	?>
-	<div class="row">
-					<div class="col-lg-12">
-						<h1 class="page-header">Search Patient</h1>
-					</div>
-					<!-- /.col-lg-12 -->
-					<input type="button" class="btn btn-info" value="Search" onClick='parent.location="search_customer.php"'/>
-				</div>
-				</br>
-				<!-- /.row -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Customers
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#Customer Id</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php                             
-                                        foreach ($results as $result) {
-                                        	?>                 
-                                    		<tr>
-												<td><?php echo($result["CUST_ID"]); ?></td>
-												<td><?php echo($result["FIRST_NAME"])?></td>
-												<td><?php echo($result["LAST_NAME"])?></td>
-											</tr>
-										<?php 
-                                        }
-
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-	<?php 
-	
-	include_once 'parts/body_footer.php';
-} else {
 ?>
 
 <body>
@@ -122,7 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <?php
-}
 include_once 'parts/bottom.php';
 ?>
 

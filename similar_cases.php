@@ -37,7 +37,7 @@ include_once 'database/Inventory.php';
                                         <form role="form">
                                             <div class="form-group">
                                                 <label>Syndrome 1</label>
-                                                <input class="form-control">
+                                                <input class="form-control" placeholder="Parameter 1">
                                             </div>
                                             <div class="form-group">
                                                 <label>Syndrome 2</label>

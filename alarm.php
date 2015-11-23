@@ -26,7 +26,14 @@ include_once 'parts/header.php';
                             <div class="panel-body">
                                 <div class="list-group">
 
-                                    <input class="form-control" placeholder="Search">
+                                    <!-- Search an alert - Auto complete -->
+                                    <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control" placeholder="Search">
+                                    <datalist id="datalist1">
+                                        <option value="First Alert">
+                                        <option value="Second Alert">
+                                        <option value="Third Alert">
+                                        <option value="4th Alert">
+                                    </datalist>
 
                                     <a href="#" class="list-group-item" id="1">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
@@ -45,7 +52,8 @@ include_once 'parts/header.php';
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
                                                 class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
                                         </button>
-                                        <input type="text" id="1desc"> <em>By X</em>
+                                        <input type="text" id="1desc">
+                                        <em>By X</em>
                                         <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="saveChanges(1)">Save
                                         </button>
                                         <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="cancelChanges(1)">Cancel

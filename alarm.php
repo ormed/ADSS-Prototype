@@ -27,7 +27,6 @@ include_once 'parts/header.php';
                                 <div class="list-group">
 
                                     <input class="form-control" placeholder="Search">
-
                                     <a href="#" class="list-group-item" id="1">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
                                                 class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
@@ -40,7 +39,7 @@ include_once 'parts/header.php';
                                     </span>
                                     </a>
 
-                                    <!-- Edit alert -->
+                                    <!-- Edit alert
                                     <a href="#" class="list-group-item" id="1edit">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
                                                 class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
@@ -55,7 +54,7 @@ include_once 'parts/header.php';
                                                 class="fa fa-times"></i>Delete
                                         </button>
                                     </span>
-                                    </a>
+                                    </a>-->
 
                                     <a href="#" class="list-group-item" id="2">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i

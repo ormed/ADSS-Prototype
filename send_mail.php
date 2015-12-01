@@ -9,4 +9,3 @@ if(mail($to, $subject, $message, $headers))
     echo "Email sent";
 else
     echo "Email sending failed";
-?>

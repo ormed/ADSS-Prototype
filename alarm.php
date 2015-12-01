@@ -52,8 +52,7 @@ include_once 'parts/header.php';
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
                                                 class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
                                         </button>
-                                        <input type="text" id="1desc">
-                                        <em>By X</em>
+                                        <input type="text" id="1desc"> <em>By X</em>
                                         <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="saveChanges(1)">Save
                                         </button>
                                         <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="cancelChanges(1)">Cancel

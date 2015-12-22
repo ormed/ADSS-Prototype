@@ -26,6 +26,10 @@ include_once 'parts/header.php';
                             <div class="panel-body">
                                 <div class="list-group">
 
+                                    <button
+                                        type="button" class="btn btn-success btn-success btn-xs" onclick="window.location='new_alarm.php'">Add New Alarm
+                                    </button>
+
                                     <!-- Search an alert - Auto complete -->
                                     <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control" placeholder="Search">
                                     <datalist id="datalist1">
@@ -98,6 +102,7 @@ include_once 'parts/header.php';
                                     </span>
                                     </a>
                                 </div>
+
                                 <!-- /.list-group -->
                                 <a href="#" class="btn btn-default btn-block">View All Alerts</a>
                             </div>

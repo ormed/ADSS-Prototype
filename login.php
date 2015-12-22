@@ -1,7 +1,7 @@
 <?php
 @session_start();
 if (isset($_SESSION['user']) && isset($_SESSION['password'])) {
-    header("Location: index.php");
+    header("Location: index2.php");
 }
 
 include_once 'parts/header.php';
@@ -24,7 +24,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     $_SESSION['user'] = $result[0]['USERNAME'];
     $_SESSION['password'] = $result[0]['PASSWORD'];
     $_SESSION['id'] = $result[0]['USER_ID'];
-    header('Location: index.php');
+    header('Location: index2.php');
 } else {
 ?>
 

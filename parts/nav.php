@@ -41,10 +41,7 @@
                     <a href="#"><i class="fa fa-wrench fa-fw"></i> Menu<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="order.php">Add Treatment</a>
-                        </li>
-                        <li>
-                            <a href="order.php">Check Treatments</a>
+                            <a href="new_alarm.php">Add Alert</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
@@ -53,7 +50,7 @@
                     <a href="#"><i class="fa fa-table"></i></i> Display<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="all_products.php">Patients</a>
+                            <a href="alarm.php">Alerts</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

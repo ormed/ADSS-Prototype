@@ -1,5 +1,5 @@
 <?php include_once 'help_functions.php'; ?>
-<?php include_once 'database/Database.php' ?>
+<?php include_once 'C:\wamp\www\ADSS-Prototype\database\Database.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 

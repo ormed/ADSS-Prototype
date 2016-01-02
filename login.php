@@ -1,7 +1,7 @@
 <?php
 @session_start();
 if (isset($_SESSION['user']) && isset($_SESSION['password'])) {
-    header("Location: index2.php");
+    header("Location: index.php");
 }
 
 include_once 'parts/header.php';
@@ -15,16 +15,20 @@ $err = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db = new Database();
     $err = User::testSignIn();
+    //if this ip tried to log in more than 5 times in the last 30 min we lock him
+    /*if (LoginAttemps::get_failed_log_count($ip_address) > 6) {
+        $err = "Sorry this ip is blocked for 30 min</br> due to multiple wrong passwords entered";
+    }*/
 }
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     //insert user to session
     $user = cleanInput($_POST['username']);
     $result = User::getUser($user);
-    $_SESSION['user'] = $result[0]['USERNAME'];
-    $_SESSION['password'] = $result[0]['PASSWORD'];
-    $_SESSION['id'] = $result[0]['USER_ID'];
-    header('Location: index2.php');
+    $_SESSION['user'] = $result[0]['username'];
+    $_SESSION['password'] = $result[0]['password'];
+    //$_SESSION['id'] = $result[0]['USER_ID'];
+    header('Location: index.php');
 } else {
 ?>
 

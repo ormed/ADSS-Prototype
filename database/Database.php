@@ -1,31 +1,30 @@
 <?php
-include_once 'help_functions.php';
+include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
 
 class Database
 {
-    private $_username = 'HR';
-    private $_password = 'oracle';
-    private $_oracle_sid = 'localhost:1521/xe';
+    // Connection info
+    private $_dsn = 'mysql:dbname=adss;host=127.0.0.1';
+    private $_username = 'root';
+    private $_password = '';
     protected $_query;
     protected $_dbh;
 
-    // contructor for creating a connection to the database
+    // constructor for creating a connection to the database
     public function __construct()
     {
-        $this->_dbh = oci_connect($this->_username, $this->_password, $this->_oracle_sid);
-        if ($this->_dbh) {
-        } else {
-            $err = oci_error();
-            debug("Connection failed: " . $err);
-            trigger_error(htmlentities($err ['message'], ENT_QUOTES), E_USER_ERROR);
-
+        try {
+            $this->_dbh = new PDO($this->_dsn,$this->_username,$this->_password);
+        } catch (PDOException $exception) {
+            echo $exception -> getMessage();
+            exit ;
         }
     }
 
     public function __destruct()
     {
-        oci_close($this->_dbh);
         // close connection
+        $this->_dbh = NULL;
     }
 
     /**
@@ -34,19 +33,20 @@ class Database
      */
     public function createQuery($q)
     {
-        $stid = oci_parse($this->_dbh, $q);
-        oci_execute($stid);
+        $this->_query = $q;
+        $stmt = $this->_dbh->prepare($this->_query);
+        $stmt->execute();
+
         // get results and limit it
         $result = array();
-        while (($row = oci_fetch_array($stid, OCI_BOTH)) != false) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
         return $result;
     }
 
-    public function parseQuery($q)
+    public function lastInsertId()
     {
-        $stid = oci_parse($this->_dbh, $q);
-        return $stid;
+        return $this->_dbh->lastInsertId();
     }
 }

@@ -32,7 +32,7 @@ include_once 'parts/header.php';
                                 </div>
                             </div>
                         </div>
-                        <a href="alerts.php">
+                        <a href="patient_info.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Case</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -54,7 +54,7 @@ include_once 'parts/header.php';
                                 </div>
                             </div>
                         </div>
-                        <a href="alerts.php">
+                        <a href="patient_info.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Case</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -78,7 +78,7 @@ include_once 'parts/header.php';
                                 </div>
                             </div>
                         </div>
-                        <a href="alerts.php">
+                        <a href="patient_info.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Case</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -100,7 +100,7 @@ include_once 'parts/header.php';
                                 </div>
                             </div>
                         </div>
-                        <a href="alerts.php">
+                        <a href="patient_info.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Case</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

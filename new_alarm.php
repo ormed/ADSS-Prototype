@@ -36,20 +36,28 @@ include_once 'parts/header.php';
 
                                             <div>
                                                 <label class="radio-inline"><input type="radio" name="optradio" checked="checked">Target Patient(s)</label>
-                                                <label class="radio-inline"><input type="radio" name="optradio">ICU Population</label>
+                                                <label class="radio-inline"><input type="radio" name="optradio" onClick="selectFunction(document.myform.selectallcb,document.myform['list[]'])">ICU Population</label>
                                             </div>
 
                                             <div class="well" style="max-height: 300px;overflow: auto;">
-                                                <ul class="list-group checked-list-box">
-                                                    <li class="list-group-item">Israel Israeli</li>
-                                                    <li class="list-group-item">Israela Israeli</li>
-                                                    <li class="list-group-item">John Doe</li>
-                                                    <li class="list-group-item">Jane Doe</li>
-                                                    <li class="list-group-item">Jane Doe</li>
-                                                    <li class="list-group-item">Jane Doe</li>
-                                                    <li class="list-group-item">Jane Doe</li>
-
-                                                </ul>
+                                                <input type="checkbox" name="list" value="1"> Israel Israeli<br>
+                                                <input type="checkbox" name="list" value="2"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="3"> John Doe<br>
+                                                <input type="checkbox" name="list" value="4"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="5"> Jane Doe<br>
+                                                <input type="checkbox" name="list" value="6"> Jane Doe<br>
+                                                <input type="checkbox" name="list" value="7"> Israel Israeli<br>
+                                                <input type="checkbox" name="list" value="8"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="9"> John Doe<br>
+                                                <input type="checkbox" name="list" value="10"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="11"> Jane Doe<br>
+                                                <input type="checkbox" name="list" value="12"> Jane Doe<br>
+                                                <input type="checkbox" name="list" value="13"> Israel Israeli<br>
+                                                <input type="checkbox" name="list" value="14"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="15"> John Doe<br>
+                                                <input type="checkbox" name="list" value="16"> Israela Israeli<br>
+                                                <input type="checkbox" name="list" value="17"> Jane Doe<br>
+                                                <input type="checkbox" name="list" value="18"> Jane Doe<br>
                                             </div>
 
 
@@ -158,8 +166,16 @@ include_once 'parts/header.php';
                         document.getElementById("1desc").value = "Test";
                 }
 
-                function cancelChanges(index) {
-
+                function selectFunction (checkall,field)
+                {
+                    window.alert("Hey");
+                    if(checkall.checked==true){
+                        for (i = 0; i < field.length; i++)
+                            field[i].checked = true ;
+                    }else{
+                        for (i = 0; i < field.length; i++)
+                            field[i].checked = false ;
+                    }
                 }
 
                 $(function () {
@@ -167,7 +183,7 @@ include_once 'parts/header.php';
 
                         // Settings
                         var $widget = $(this),
-                            $checkbox = $('<input type="checkbox" class="hidden"/>'),
+                            $checkbox = $('<input type="checkbox" class="" id="myid1"/>'),
                             color = ($widget.data('color') ? $widget.data('color') : "primary"),
                             style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
                             settings = {
@@ -241,10 +257,7 @@ include_once 'parts/header.php';
                     });
                 });
 
-                function selectAllPatients()
-                {
-                    document.getElementById('myCheck1').setAttribute('data-checked', "true");
-                }
+
             </script>
 
 </body>

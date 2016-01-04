@@ -7709,6 +7709,10 @@ button.close {
     visibility: hidden;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .text-hide {
     font: 0/0 a;
     color: transparent;

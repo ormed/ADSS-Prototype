@@ -35,37 +35,16 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li>
-                    <a href="index.php">Lobby</a>
+                    <a href="index.php">Main</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-wrench fa-fw"></i> Menu<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="new_alarm.php">Add Alert</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
+                    <a href="alarm.php">Notifiers</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-table"></i></i> Display<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="alarm.php">Alerts</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
+                    <a href="similar_cases.php">Search Cases</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-search"></i> Search<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="search_patient.php">Search Patient</a>
-                        </li>
-                        <li>
-                            <a href="search_treatment.php">Search Treatment</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
+                    <a href="trials.php">Trials</a>
                 </li>
             </ul>
         </div>

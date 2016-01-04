@@ -1,15 +1,11 @@
 <?php
-//include_once 'connection/checkUser.php';
+include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 
-$db = new Database();
-if($db) {
-    echo "Good";
-}
-else
-{
-    echo "Bad";
-}
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+
+} //else {
+
 ?>
 <body>
 <div id="wrapper">
@@ -31,7 +27,7 @@ else
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form class="form-inline col-xs-10 col-xs-offset-1" role="form">
+                                    <form class="form-inline col-xs-10 col-xs-offset-1" role="form" method="POST" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
 
                                         <div class="input-group">
                                             <div class="form-group">
@@ -103,7 +99,7 @@ else
                                                 </select>
                                             </div>
                                             <p></p>
-                                            <button type="submit" class="btn btn-default">Submit</button>
+                                            <button type="button" class="btn btn-default">Submit</button>
                                         </div>
 
                                         <p></p>
@@ -116,20 +112,20 @@ else
                                                 </select>
                                             </div>
                                             <p></p>
-                                            <button type="submit" class="btn btn-default">Submit</button>
+                                            <button type="button" class="btn btn-default">Submit</button>
                                         </div>
 
                                         <p></p>
                                         <legend></legend>
 
-                                        <button type="submit" class="btn btn-success col-xs-offset-5">Search</button>
+                                        <button type="button" class="btn btn-success col-xs-offset-5" onclick="showResults();">Search</button>
                                     </form>
                                 </div>
 
 
                                 <!-- /.col-lg-6 (nested) -->
                                 <div class="col-lg-6">
-                                    <h1 class="col-xs-offset-3">Preview</h1>
+                                    <h1 class="text-center">Preview</h1>
                                     <form role="form">
                                         <fieldset>
                                             <div class="panel-body">
@@ -175,9 +171,76 @@ else
                                             </div>
                                         </fieldset>
                                     </form>
-
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
+
+
+                                <legend></legend>
+
+                                <!-- /Results -->
+                                <div class="col-lg-12 hidden" id="results_div">
+                                    <h1 class="text-center">Results</h1>
+
+                                    <p></p>
+                                    <legend></legend>
+
+                                    <form role="form">
+                                        <fieldset>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Age</th>
+                                                                <th>Sex</th>
+                                                                <th>LOS (days)</th>
+                                                                <th>Medications</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>132</td>
+                                                                <td>67</td>
+                                                                <td>F</td>
+                                                                <td>12</td>
+                                                                <td>Vasopressin</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>15465</td>
+                                                                <td>45</td>
+                                                                <td>M</td>
+                                                                <td>4</td>
+                                                                <td>Ephedrin</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>23444</td>
+                                                                <td>75</td>
+                                                                <td>M</td>
+                                                                <td>2</td>
+                                                                <td>Vitamin K</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>34523</td>
+                                                                <td>82</td>
+                                                                <td>F</td>
+                                                                <td>25</td>
+                                                                <td>Vitamin K</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.table-responsive -->
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <!-- /.Results -->
+
+
+
+
                             </div>
                             <!-- /.row (nested) -->
                         </div>
@@ -195,5 +258,18 @@ else
 
 
 
+                <script>
+                    function showResults()
+                    {
+                        document.getElementById("results_div").removeAttribute("class");
+                    }
+
+                </script>
 </body>
+
+<?php
+//}
+?>
+
 </html>
+

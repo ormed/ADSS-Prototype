@@ -122,7 +122,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </form>
                                 </div>
 
-
                                 <!-- /.col-lg-6 (nested) -->
                                 <div class="col-lg-6">
                                     <h1 class="text-center">Preview</h1>
@@ -174,8 +173,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
 
-
                                 <legend></legend>
+
 
                                 <!-- /Results -->
                                 <div class="col-lg-12 hidden" id="results_div">
@@ -200,28 +199,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                                         </thead>
 
                                                         <tbody>
-                                                            <tr>
+                                                            <tr id="result.entry[]">
                                                                 <td>132</td>
                                                                 <td>67</td>
                                                                 <td>F</td>
                                                                 <td>12</td>
                                                                 <td>Vasopressin</td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr id="result.entry[]">
                                                                 <td>15465</td>
                                                                 <td>45</td>
                                                                 <td>M</td>
                                                                 <td>4</td>
                                                                 <td>Ephedrin</td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr id="result.entry[]">
                                                                 <td>23444</td>
                                                                 <td>75</td>
                                                                 <td>M</td>
                                                                 <td>2</td>
                                                                 <td>Vitamin K</td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr id="result.entry[]">
                                                                 <td>34523</td>
                                                                 <td>82</td>
                                                                 <td>F</td>
@@ -263,6 +262,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     {
                         document.getElementById("results_div").removeAttribute("class");
                     }
+
+                    $("#result\\.entry\\[\\]").click(function() {
+                        location.href = 'patient_info.php';
+                    });
 
                 </script>
 </body>

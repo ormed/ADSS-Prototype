@@ -35,29 +35,29 @@ include_once 'parts/header.php';
                                             </div>
 
                                             <div>
-                                                <label class="radio-inline"><input type="radio" name="optradio" checked="checked">Target Patient(s)</label>
-                                                <label class="radio-inline"><input type="radio" name="optradio" onClick="selectFunction(document.myform.selectallcb,document.myform['list[]'])">ICU Population</label>
+                                                <label class="radio-inline"><input type="radio" name="optradio" id="deselecctall" checked="checked">Target Patient(s)</label>
+                                                <label class="radio-inline"><input type="radio" name="optradio" id="selecctall">ICU Population</label>
                                             </div>
 
                                             <div class="well" style="max-height: 300px;overflow: auto;">
-                                                <input type="checkbox" name="list" value="1"> Israel Israeli<br>
-                                                <input type="checkbox" name="list" value="2"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="3"> John Doe<br>
-                                                <input type="checkbox" name="list" value="4"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="5"> Jane Doe<br>
-                                                <input type="checkbox" name="list" value="6"> Jane Doe<br>
-                                                <input type="checkbox" name="list" value="7"> Israel Israeli<br>
-                                                <input type="checkbox" name="list" value="8"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="9"> John Doe<br>
-                                                <input type="checkbox" name="list" value="10"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="11"> Jane Doe<br>
-                                                <input type="checkbox" name="list" value="12"> Jane Doe<br>
-                                                <input type="checkbox" name="list" value="13"> Israel Israeli<br>
-                                                <input type="checkbox" name="list" value="14"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="15"> John Doe<br>
-                                                <input type="checkbox" name="list" value="16"> Israela Israeli<br>
-                                                <input type="checkbox" name="list" value="17"> Jane Doe<br>
-                                                <input type="checkbox" name="list" value="18"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="1"> Israel Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="2"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="3"> John Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="4"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="5"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="6"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="7"> Israel Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="8"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="9"> John Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="10"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="11"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="12"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="13"> Israel Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="14"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="15"> John Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="16"> Israela Israeli<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="17"> Jane Doe<br>
+                                                <input type="checkbox" class="checkbox1" name="check[]" value="18"> Jane Doe<br>
                                             </div>
 
 
@@ -178,82 +178,19 @@ include_once 'parts/header.php';
                     }
                 }
 
-                $(function () {
-                    $('.list-group.checked-list-box .list-group-item').each(function () {
-
-                        // Settings
-                        var $widget = $(this),
-                            $checkbox = $('<input type="checkbox" class="" id="myid1"/>'),
-                            color = ($widget.data('color') ? $widget.data('color') : "primary"),
-                            style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
-                            settings = {
-                                on: {
-                                    icon: 'glyphicon glyphicon-check'
-                                },
-                                off: {
-                                    icon: 'glyphicon glyphicon-unchecked'
-                                }
-                            };
-
-                        $widget.css('cursor', 'pointer')
-                        $widget.append($checkbox);
-
-                        // Event Handlers
-                        $widget.on('click', function () {
-                            $checkbox.prop('checked', !$checkbox.is(':checked'));
-                            $checkbox.triggerHandler('change');
-                            updateDisplay();
+                $(document).ready(function() {
+                    $('#selecctall').click(function(event) {  //on click
+                        $('.checkbox1').each(function() { //loop through each checkbox
+                            this.checked = true;  //select all checkboxes with class "checkbox1"
                         });
-                        $checkbox.on('change', function () {
-                            updateDisplay();
-                        });
-
-
-                        // Actions
-                        function updateDisplay() {
-                            var isChecked = $checkbox.is(':checked');
-
-                            // Set the button's state
-                            $widget.data('state', (isChecked) ? "on" : "off");
-
-                            // Set the button's icon
-                            $widget.find('.state-icon')
-                                .removeClass()
-                                .addClass('state-icon ' + settings[$widget.data('state')].icon);
-
-                            // Update the button's color
-                            if (isChecked) {
-                                $widget.addClass(style + color + ' active');
-                            } else {
-                                $widget.removeClass(style + color + ' active');
-                            }
-                        }
-
-                        // Initialization
-                        function init() {
-
-                            if ($widget.data('checked') == true) {
-                                $checkbox.prop('checked', !$checkbox.is(':checked'));
-                            }
-
-                            updateDisplay();
-
-                            // Inject the icon if applicable
-                            if ($widget.find('.state-icon').length == 0) {
-                                $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
-                            }
-                        }
-                        init();
                     });
+                });
 
-                    $('#get-checked-data').on('click', function(event) {
-                        event.preventDefault();
-                        var checkedItems = {}, counter = 0;
-                        $("#check-list-box li.active").each(function(idx, li) {
-                            checkedItems[counter] = $(li).text();
-                            counter++;
+                $(document).ready(function() {
+                    $('#deselecctall').click(function (event) {  //on click
+                        $('.checkbox1').each(function () { //loop through each checkbox
+                            this.checked = false; //deselect all checkboxes with class "checkbox1"
                         });
-                        $('#display-json').html(JSON.stringify(checkedItems, null, '\t'));
                     });
                 });
 

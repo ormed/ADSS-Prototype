@@ -25,8 +25,17 @@ include_once 'parts/header.php';
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-search fa-4x"></i>
+                                    <a class="btn btn-large btn-primary" onclick="openSOFA(1);"><i class="fa fa-search fa-3x"></i> SOFA</a>
+                                    <div class="hidden" id="sofa1">
+                                        </br>
+                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
+                                        </br></br>
+                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
+                                    </div>
+                                    </br></br>
+                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
                                 </div>
+                                </br></br>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">Israel Israeli</div>
                                 </div>
@@ -34,7 +43,7 @@ include_once 'parts/header.php';
                         </div>
                         <a href="patient_info.php">
                             <div class="panel-footer">
-                                <span class="pull-left">View Case</span>
+                                <span class="pull-left">View Patient</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                 <div class="clearfix"></div>
@@ -47,8 +56,17 @@ include_once 'parts/header.php';
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-search fa-4x"></i>
+                                    <a class="btn btn-large btn-primary" onclick="openSOFA(2);"><i class="fa fa-search fa-3x"></i> SOFA</a>
+                                    <div class="hidden" id="sofa2">
+                                        </br>
+                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
+                                        </br></br>
+                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
+                                    </div>
+                                    </br></br>
+                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
                                 </div>
+                                </br></br>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">Israel Israeli</div>
                                 </div>
@@ -56,7 +74,7 @@ include_once 'parts/header.php';
                         </div>
                         <a href="patient_info.php">
                             <div class="panel-footer">
-                                <span class="pull-left">View Case</span>
+                                <span class="pull-left">View Patient</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                 <div class="clearfix"></div>
@@ -71,8 +89,17 @@ include_once 'parts/header.php';
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-search fa-4x"></i>
+                                    <a class="btn btn-large btn-primary" onclick="openSOFA(3);"><i class="fa fa-search fa-3x"></i> SOFA</a>
+                                    <div class="hidden" id="sofa3">
+                                        </br>
+                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
+                                        </br></br>
+                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
+                                    </div>
+                                    </br></br>
+                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
                                 </div>
+                                </br></br>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">Israel Israeli</div>
                                 </div>
@@ -80,7 +107,7 @@ include_once 'parts/header.php';
                         </div>
                         <a href="patient_info.php">
                             <div class="panel-footer">
-                                <span class="pull-left">View Case</span>
+                                <span class="pull-left">View Patient</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                 <div class="clearfix"></div>
@@ -93,8 +120,17 @@ include_once 'parts/header.php';
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-search fa-4x"></i>
+                                    <a class="btn btn-large btn-primary" onclick="openSOFA(4);"><i class="fa fa-search fa-3x"></i> SOFA</a>
+                                    <div class="hidden" id="sofa4">
+                                        </br>
+                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
+                                        </br></br>
+                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
+                                    </div>
+                                    </br></br>
+                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
                                 </div>
+                                </br></br>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">Israel Israeli</div>
                                 </div>
@@ -102,7 +138,7 @@ include_once 'parts/header.php';
                         </div>
                         <a href="patient_info.php">
                             <div class="panel-footer">
-                                <span class="pull-left">View Case</span>
+                                <span class="pull-left">View Patient</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                 <div class="clearfix"></div>
@@ -122,6 +158,17 @@ include_once 'parts/header.php';
 
 
 <?php include_once 'parts/bottom.php'; ?>
+
+<script>
+    function openSOFA(index)
+    {
+        if(document.getElementById("sofa"+index).getAttribute("class") != "") {
+            document.getElementById("sofa"+index).setAttribute("class", "");
+        } else {
+            document.getElementById("sofa"+index).setAttribute("class", "hidden");
+        }
+    }
+</script>
 
 </body>
 

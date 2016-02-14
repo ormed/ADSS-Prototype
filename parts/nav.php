@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="index.php"><i class="fa fa-ambulance"></i> Prototype | <font color="green"
-                                                                                                   style="font-family: Cursive">Welcome <?php //echo $_SESSION['user']?>
+                                                                                                   style="font-family: Cursive">Welcome <?php echo $_SESSION['name']?>
                 !</font></a>
     </div>
     <!-- /.navbar-header -->

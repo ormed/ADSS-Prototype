@@ -27,7 +27,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     $result = User::getUser($user);
     $_SESSION['user'] = $result[0]['username'];
     $_SESSION['password'] = $result[0]['password'];
-    //$_SESSION['id'] = $result[0]['USER_ID'];
+    $_SESSION['name'] = $result[0]['name'];
     header('Location: index.php');
 } else {
 ?>

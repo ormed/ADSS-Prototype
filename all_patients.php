@@ -1,11 +1,6 @@
 <?php
 //include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
-include_once 'database/Products.php';
-include_once 'database/Balance.php';
-include_once 'database/Customer.php';
-include_once 'database/Invoice.php';
-include_once 'database/Order.php';
 ?>
 
 <body>

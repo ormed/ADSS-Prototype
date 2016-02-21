@@ -1,4 +1,5 @@
 <?php
+include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 include_once 'database/FixDB.php';
 ?>
@@ -40,16 +41,17 @@ include_once 'database/FixDB.php';
                             <tbody>
                             <?php
                             $max_id = 4571;
-                            $max = FixDB::getAllDatesForId(301);
+                            $max = FixDB::getAllDatesForId(4401);
                             echo ("Max Before: ". $max);
-                            for($i=302; $i<=400; $i++) {
+                            FixDB::alterTable();
+                            /*for($i=4402; $i<=4600; $i++) {
                                 $current_max = FixDB::getAllDatesForId($i);
                                 if($current_max > $max)
                                 {
                                     $max = $current_max;
                                 }
                             }
-                            echo (" Max After: ".$max);
+                            echo (" Max After: ".$max);*/
 
 
                             /*foreach ($results as $result) {

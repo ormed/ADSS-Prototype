@@ -46,6 +46,9 @@
                 <li>
                     <a href="trials.php">Trials</a>
                 </li>
+                <li>
+                    <a href="rscript.php">Run Algorithm</a>
+                </li>
             </ul>
         </div>
         <!-- /.sidebar-collapse -->

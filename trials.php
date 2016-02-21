@@ -1,15 +1,7 @@
 <?php
-//include_once 'connection/checkUser.php';
+include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 
-$db = new Database();
-if($db) {
-    echo "Good";
-}
-else
-{
-    echo "Bad";
-}
 ?>
 <body>
 <div id="wrapper">

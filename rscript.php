@@ -42,7 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     chdir("C:/Program Files/R/R-3.2.3/bin/i386");
-    $result = shell_exec("Rscript printx.R");
+    $result = shell_exec("Rscript ".$_FILES["fileToUpload"]["name"]);
+    if(empty($result))
+    {
+
+        //$result = "<embed width='100%' height='100%' src='http://localhost/ADSS-Prototype/uploads/Rplots.pdf' type='application/pdf'></embed>";
+    }
 }
 ?>
 <body>
@@ -87,13 +92,28 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                                     Result
                                                 </div>
                                                 <div class="panel-body">
-                                                    <p><?php echo $result ?></p>
+                                                    <?php echo $result ?>
                                                 </div>
                                             </div>
                                         <?php } ?>
-                                    <form role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
-                                        <input type="file" name="fileToUpload" id="fileToUpload">
 
+                                    <form role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+                                    <div class="form-group">
+                                        <select id="algorithm" name="algorithm" class="form-control">
+                                            <option>SOFA</option>
+                                            <option>Morbidity</option>
+                                            <option>New</option>
+                                        </select>
+                                        <div id="new_algo" style="display: none;">
+                                            <p></p>
+                                            <select id="algorithm" name="algorithm" class="form-control">
+                                                <option>Retro</option>
+                                                <option>Pre</option>
+                                            </select>
+                                            <p></p>
+                                            <input type="file" name="fileToUpload" id="fileToUpload">
+                                        </div>
+                                    </div>
                                         <p></p>
                                         <input type="submit" class="btn btn-success" value="Submit" name="submit">
                                     </form>
@@ -105,6 +125,21 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                     </div>
                     <!-- /.panel -->
                 </div>
+
+                <script type="text/javascript">
+                    window.onload = function() {
+                        var eSelect = document.getElementById('algorithm');
+                        var totalAlgorithms = eSelect.options.length-1;
+                        var optOtherReason = document.getElementById('new_algo');
+                        eSelect.onchange = function() {
+                            if(eSelect.selectedIndex === totalAlgorithms) {
+                                optOtherReason.style.display = 'block';
+                            } else {
+                                optOtherReason.style.display = 'none';
+                            }
+                        }
+                    }
+                </script>
 
 
                 <?php

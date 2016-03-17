@@ -43,6 +43,43 @@ class FixDB {
         }
     }
 
+    public static function getMedian($id) {
+        $db = new Database();
+        $q = "select `Value` from `calcium1` where `rand.id`=".$id;
+        $res = $db->createQuery($q);
+        $new_res = array();
+        $size = count($res);
+        for($i=0; $i<$size; $i++)
+        {
+            array_push($new_res, $res[$i]['Value']);
+        }
+        return $new_res;
+    }
+
+    public static function getMean($id) {
+        $db = new Database();
+        $q = "select TRUNCATE(AVG(`Value`),2) as mean from `creatinine` where `rand.id`=".$id;
+        $res = $db->createQuery($q);
+        return $res[0]['mean'];
+    }
+
+    public static function getMax($id) {
+        $db = new Database();
+        $q = "select MAX(`Value`) as max from `creatinine` where `rand.id`=".$id;
+        $res = $db->createQuery($q);
+        return $res[0]['max'];
+    }
+
+    /**
+     * insert patient vector
+     */
+    public static function insertPatientVec($id, $median, $mean, $max) {
+        $db = new Database();
+        $q = "UPDATE `adss`.`patients_vectors` SET `creatinine_median`=$median, `creatinine_mean`=$mean, `creatinine_max`=$max WHERE `id`=".$id;
+        $db->createQuery($q);
+
+    }
+
     /**
      * @param $id
      * @return the count of dates

@@ -49,6 +49,9 @@
                 <li>
                     <a href="rscript.php">Run Algorithm</a>
                 </li>
+                <li>
+                    <a href="setupDB.php">Set DB</a>
+                </li>
             </ul>
         </div>
         <!-- /.sidebar-collapse -->

@@ -1,6 +1,7 @@
 <?php
 include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
+include_once 'help_functions.php';
 include_once 'database/FixDB.php';
 ?>
 
@@ -33,43 +34,44 @@ include_once 'database/FixDB.php';
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
+                            <?php /*
                             <tr>
                                 <th>#Id</th>
-                                <th>Date</th>
+                                <th>Median</th>
+                                <th>Mean</th>
+                                <th>Max</th>
                             </tr>
+                            */
+                            ?>
                             </thead>
                             <tbody>
                             <?php
-                            $max_id = 4571;
-                            $max = FixDB::getAllDatesForId(4401);
-                            echo ("Max Before: ". $max);
-                            FixDB::alterTable();
-                            /*for($i=4402; $i<=4600; $i++) {
-                                $current_max = FixDB::getAllDatesForId($i);
-                                if($current_max > $max)
-                                {
-                                    $max = $current_max;
+                            $max_id = 4600;
+
+                            for($id=4500; $id<=4571; $id++) {
+                                $res = FixDB::getMedian($id);
+                                $mean = FixDB::getMean($id);
+                                $max = FixDB::getMax($id);
+
+                                if(!empty($res) && !empty($mean) && !empty($max)) {
+                                    //$total_res[$id]['bicarbonate_median'] = array_median($res);
+                                    //$total_res[$id]['bicarbonate_mean'] = $mean;
+                                    //$total_res[$id]['bicarbonate_max'] = $max;
+                                    //debug($total_res);
+                                    $new_res = array_median($res);
+                                    /*
+                                    <tr>
+                                        <td><?php echo($id); ?></td>
+                                        <td><?php echo($new_res) ?></td>
+                                        <td><?php echo($mean); ?></td>
+                                        <td><?php echo($max); ?></td>
+                                    </tr>*/
+                                    ?>
+                                    <?php
+                                    FixDB::insertPatientVec($id, $new_res, $mean, $max);
                                 }
                             }
-                            echo (" Max After: ".$max);*/
-
-
-                            /*foreach ($results as $result) {
-                                ?>
-                                <tr>
-                                    <td><?php echo($i); ?></td>
-                                    <?php
-                                    $originalDate = $result["Date.Time"];
-                                    $t = date_create_from_format("d/m/Y H:i",$originalDate);
-                                    $newDate = date_format($t,"d/m/Y H:i:s");
-                                    //$originalDate = $result["Date.Time"];
-                                    //$newDate = date("Y-m-d H:i:s", strtotime($originalDate));
-                                    ?>
-                                    <td><?php echo($newDate)?></td>
-                                </tr>
-                                <?php
-                            }*/
-
+                            echo("Done!");
                             ?>
                             </tbody>
                         </table>

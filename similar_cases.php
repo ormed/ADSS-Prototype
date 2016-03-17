@@ -4,7 +4,34 @@ include_once 'parts/header.php';
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-} //else {
+// Random cartesian coordinates (x, y) and labels
+
+
+    $data = array(
+        array(1, 2, 'red'),   // 0 =>
+        array(5, 3, 'blue'),  // 1 =>
+        array(-1, 2, 'blue'), // 2 =>
+        array(2, 5, 'red'),   // 3 =>
+        array(3, 3, 'red'),   // 4 =>
+        array(-4, 5, 'blue'), // 5 =>
+        array(2, 2, 'blue'),  // 6 =>
+        array(5, -2, 'red'),  // 7 =>
+        array(-1, -2, 'blue'),// 8 =>
+    );
+
+
+// Build distance matrix
+    $distances = $data;
+    array_walk($distances, 'euclideanDistance', $data);
+
+
+// Example, target = datapoint 5, getting 3 nearest neighbors
+    $neighbors = getNearestNeighbors($distances, 5, 3);
+    debug($neighbors);
+
+    echo getLabel($data, $neighbors); // red
+
+} else {
 
 ?>
 <body>
@@ -271,7 +298,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 <?php
-//}
+}
 ?>
 
 </html>

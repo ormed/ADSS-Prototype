@@ -1,4 +1,5 @@
 <?php
+include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 ?>
 <body>

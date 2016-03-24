@@ -44,7 +44,7 @@ function array_median($array) {
 /**
  * Calculates eucilean distances for an array dataset
  *
- * @param array $sourceCoords In format array(x, y)
+ * @param array $sourceCoords In format array(x, y, ...)
  * @param array $sourceKey Associated array key
  * @param array $data
  * @return array Of distances to the rest of the data set
@@ -52,17 +52,25 @@ function array_median($array) {
 function euclideanDistance($sourceCoords, $sourceKey, $data)
 {
     $distances = array();
-    list ($x1, $y1) = $sourceCoords;
+    $params_size = sizeof($sourceCoords)-1;
+    for($i = 1; $i <= $params_size; $i++) {
+        ${'x'.$i} = $sourceCoords[$i];
+    }
     foreach ($data as $destinationKey => $destinationCoords) {
         // Same point, ignore
         if ($sourceKey == $destinationKey) {
             continue;
         }
-        list ($x2, $y2) = $destinationCoords;
-        $distances[$destinationKey] = sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
+        $sum = 0;
+        for($i = 1; $i <= $params_size; $i++) {
+            ${'y'.$i} = $destinationCoords[$i];
+            $sum += (pow((${'x'.$i} - ${'y'.$i}), 2));
+        }
+        $distances[$destinationKey] = sqrt($sum);
     }
     asort($distances);
     $sourceCoords = $distances;
+    return $sourceCoords;
 }
 
 /**

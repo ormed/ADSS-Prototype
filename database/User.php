@@ -30,13 +30,27 @@ class User {
     }
 
     /**
+     * function to check if edit form was submitted ok
+     * return errors if found any
+     */
+    public static function testEdit() {
+        $err = '';
+        if (empty($_POST['name'])) {
+            $err = "Please fill in the name field";
+        } else {
+            $string_exp = "/^[A-Za-z .'-]+$/";
+            if (!preg_match($string_exp, $_POST['name'])) {
+                $err = 'The name you entered does not appear to be valid.';
+            }
+        }
+        return $err;
+    }
+
+    /**
      * get user params from post
      */
-    public static function newUser() {
-        $username = 'tami';
-        $password = password_hash('1234', PASSWORD_BCRYPT);;
-        $name = 'Tami Rotem';
-        $auth = 1;
+    public static function newUser($username, $pass, $name, $auth) {
+        $password = password_hash($pass, PASSWORD_BCRYPT);;
         return User::insertUser($username, $password, $name, $auth);
     }
 
@@ -51,9 +65,20 @@ class User {
     }
 
     /**
+     * update user
+     * @param - $user->user to update, $name
+     */
+    public static function updateUser($user, $name) {
+        $db = new Database();
+        $q = "UPDATE users SET `name`='{$name}' WHERE username = '{$user}'";
+        $db->createQuery($q);
+    }
+
+    /**
      * get user from database
      * return false if was not found
-     * @param - $user - a user name to search for
+     * @param array $user - a user name to search for
+     * @return array $result - found user
      */
     public static function getUser($user) {
         $db = new Database();
@@ -64,6 +89,17 @@ class User {
         } else {
             return FALSE;
         }
+    }
+
+    /**
+     * get all users in db
+     * @return array $result - all users
+     */
+    public static function getUsers() {
+        $db = new Database();
+        $q = "SELECT * FROM users";
+        $result = $db->createQuery($q);
+        return $result;
     }
 
 }

@@ -31,17 +31,32 @@ include_once 'parts/header.php';
                                 <div class="form-group">
                                     <label>Username:</label>
                                     <input class="form-control" id="disabledInput" type="text"
-                                           placeholder="<?php echo $results[0]["USERNAME"]; ?>" disabled>
+                                           placeholder="<?php echo $results[0]["username"]; ?>" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>First Name</label>
+                                    <label>Name:</label>
                                     <input class="form-control" id="disabledInput" type="text"
-                                           placeholder="<?php echo $results[0]["FIRST_NAME"]; ?>" disabled>
+                                           placeholder="<?php echo $results[0]["name"]; ?>" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Last Name</label>
+                                    <label>Authorization:</label>
                                     <input class="form-control" id="disabledInput" type="text"
-                                           placeholder="<?php echo $results[0]["LAST_NAME"]; ?>" disabled>
+                                           placeholder="<?php
+                                           switch($results[0]["auth"]) {
+                                               case 1:
+                                                   echo "Admin";
+                                                   break;
+                                               case 2:
+                                                   echo "Dr.";
+                                                   break;
+                                               case 3:
+                                                   echo "Nurse";
+                                                   break;
+                                               case 4:
+                                                   echo "Research";
+                                                   break;
+                                           }
+                                           ?>" disabled>
                                 </div>
                                 <input type=button class="btn btn-default" onClick="location='user_edit.php'"
                                        value='Edit'>

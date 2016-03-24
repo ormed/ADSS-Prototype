@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.php"><i class="fa fa-ambulance"></i> Prototype | <font color="green"
+        <a class="navbar-brand" href="index.php"><i class="fa fa-ambulance"></i> Afeka Decision Support System | <font color="green"
                                                                                                    style="font-family: Cursive">Welcome <?php echo $_SESSION['name']?>
                 !</font></a>
     </div>
@@ -21,6 +21,14 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
                 <li><a href="user_info.php"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <?php
+                    if($_SESSION['auth'] == 1) // if admin
+                    {
+                        ?>
+                        <li><a href="edit_users.php"><i class="fa fa-users fa-fw"></i> Edit Users</a>
+                    <?php
+                    }
+                    ?>
                 <li class="divider"></li>
                 <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                 </li>
@@ -55,6 +63,7 @@
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
+        <div id="footer">Copyright &copy; Afeka Decision Support System</div>
     </div>
     <!-- /.navbar-static-side -->
 </nav>

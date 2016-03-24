@@ -7,7 +7,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 // Random cartesian coordinates (x, y) and labels
 
 
-    $data = array(
+    /*$data = array(
         array(1, 2, 'red'),   // 0 =>
         array(5, 3, 'blue'),  // 1 =>
         array(-1, 2, 'blue'), // 2 =>
@@ -18,18 +18,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         array(5, -2, 'red'),  // 7 =>
         array(-1, -2, 'blue'),// 8 =>
     );
+    debug($data);*/
+
+    //$file = fopen("C:/Users/Or/Desktop/Patients.csv","r");
+
+    $data = array();
+    $row=0;
+    $file = fopen('C:/Users/Or/Desktop/Patients.csv', 'r');
+    while (($line = fgetcsv($file)) !== FALSE) {
+        $data[$line[0]] = $line;
+        $row++;
+        //$line is an array of the csv elements
+        //print_r($line);
+    }
+    fclose($file);
+
+    unset($data[0]); // Remove params header
+    //debug($data);
 
 
+    /*$data = array(
+        array(ID, Min_WBC, MAX_WBC, MEDIAN_WBC), // 0 =>
+        array(1, 0, 43.02, 25.21) // 1 =>
+    )*/
 // Build distance matrix
-    $distances = $data;
-    array_walk($distances, 'euclideanDistance', $data);
+    $distances = array();
+    $size = sizeof($data);
+    $distances[1] = euclideanDistance($data[1], 1, $data);
+// Example, target = datapoint 1, getting 10 nearest neighbors
+    $neighbors = getNearestNeighbors($distances, 1, 100);
 
-
-// Example, target = datapoint 5, getting 3 nearest neighbors
-    $neighbors = getNearestNeighbors($distances, 5, 3);
     debug($neighbors);
-
-    echo getLabel($data, $neighbors); // red
+    //echo getLabel($data, $neighbors); // red*/
 
 } else {
 

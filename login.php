@@ -28,6 +28,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     $_SESSION['user'] = $result[0]['username'];
     $_SESSION['password'] = $result[0]['password'];
     $_SESSION['name'] = $result[0]['name'];
+    $_SESSION['auth'] = $result[0]['auth'];
     header('Location: index.php');
 } else {
 ?>

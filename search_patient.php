@@ -2,8 +2,6 @@
 //include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 include_once 'database/Database.php';
-include_once 'database/Customer.php';
-
 
 ?>
 

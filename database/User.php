@@ -1,5 +1,6 @@
 <?php
 @session_start();
+include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
 
 class User {
 
@@ -35,12 +36,52 @@ class User {
      */
     public static function testEdit() {
         $err = '';
-        if (empty($_POST['name'])) {
-            $err = "Please fill in the name field";
+        if(isset($_POST['username'])) {
+            if(empty($_POST['username']) || empty($_POST['name'])) {
+                $err = "Please fill in all the fields.";
+                return $err;
+            } else {
+                $string_exp = "/^[A-Za-z .'-]+$/";
+                if (!preg_match($string_exp, $_POST['name'])) {
+                    $err = 'The name you entered does not appear to be valid.';
+                    return $err;
+                }
+                if(User::getUser($_POST['username'])) {
+                    $err = "Username is already exist.";
+                    return $err;
+                }
+            }
+        }
+        return $err;
+    }
+
+    /**
+     * function to check if new user form was submitted ok
+     * return errors if found any
+     */
+    public static function testNew() {
+        $err = '';
+        if (empty($_POST['name']) || empty($_POST['username']) || empty($_POST['password'])
+            || empty($_POST['cpassword'])) {
+            $err = "Please fill in all the fields.";
+            return $err;
         } else {
             $string_exp = "/^[A-Za-z .'-]+$/";
+            if (!preg_match($string_exp, $_POST['username'])) {
+                $err = 'The username you entered does not appear to be valid.';
+                return $err;
+            }
             if (!preg_match($string_exp, $_POST['name'])) {
                 $err = 'The name you entered does not appear to be valid.';
+                return $err;
+            }
+            if ($_POST['password'] != $_POST['cpassword']) {
+                $err = 'Confirm password is wrong.';
+                return $err;
+            }
+            if (User::getUser($_POST['username'])) {
+                $err = "Username is already exist.";
+                return $err;
             }
         }
         return $err;

@@ -26,6 +26,7 @@
                     {
                         ?>
                         <li><a href="edit_users.php"><i class="fa fa-users fa-fw"></i> Edit Users</a>
+                        <li><a href="add_user.php"><i class="fa fa-user-plus fa-fw"></i> Add User</a>
                     <?php
                     }
                     ?>

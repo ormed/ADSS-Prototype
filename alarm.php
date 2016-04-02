@@ -1,7 +1,25 @@
 <?php
 include_once 'connection/checkUser.php';
+include_once 'database/Notification.php';
 
 include_once 'parts/header.php';
+
+$err = '';
+$success = '';
+
+//Check if post back
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $err = User::testEdit();
+}
+
+if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
+    //User::updateUser($_POST["username"], $_POST["name"], $_POST["auth"]);
+    $success = "Done!";
+}
+else {
+
+    $results = Notification::getNotifications();
+
 ?>
     <body>
     <div id="wrapper">
@@ -37,14 +55,14 @@ include_once 'parts/header.php';
                                     <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control" placeholder="Search">
                                     <datalist id="datalist1">
                                         <option value="First Alert">
-                                        <option value="Second Alert">
-                                        <option value="Third Alert">
-                                        <option value="4th Alert">
                                     </datalist>
 
                                     </br>
 
-                                    <a href="#" class="list-group-item" id="1">
+                                    <?php
+                                    foreach ($results as $value) {
+                                    ?>
+                                    <a href="#" class="list-group-item" id="<?php echo $value['id'];?>">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
                                                 class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
                                         </button>
@@ -55,6 +73,9 @@ include_once 'parts/header.php';
                                         </button>
                                     </span>
                                     </a>
+                                    <?php
+                                    }
+                                    ?>
 
                                     <!-- Edit alert
                                     <a href="#" class="list-group-item" id="1edit">
@@ -72,40 +93,6 @@ include_once 'parts/header.php';
                                         </button>
                                     </span>
                                     </a>-->
-
-                                    <a href="#" class="list-group-item" id="2">
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o" onclick="editAlert(2)"></i>Edit
-                                        </button>
-                                        Second Alert <em>by Dr Y</em>
-                                    <span class="pull-right text-muted small"><em>12 minutes ago </em>
-                                        <button type="button" class="btn btn-danger btn-danger btn-xs" onclick="areYouSure(2)"><i
-                                                class="fa fa-times"></i>Delete
-                                        </button>
-                                    </span>
-                                    </a>
-                                    <a href="#" class="list-group-item" id="3">
-                                        <button type="submit" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o"></i>Edit
-                                        </button>
-                                        Third Alert <em>by Dr Z</em>
-                                    <span class="pull-right text-muted small"><em>27 minutes ago </em><button
-                                            type="button" class="btn btn-danger btn-danger btn-xs" onclick="areYouSure(3)"><i
-                                                class="fa fa-times"></i>Delete
-                                        </button>
-                                    </span>
-                                    </a>
-                                    <a href="#" class="list-group-item" id="4">
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o"></i>Edit
-                                        </button>
-                                        4th Alert <em>by Dr X</em>
-                                    <span class="pull-right text-muted small"><em>21/11/2015 10:24 </em><button
-                                            type="button" class="btn btn-danger btn-danger btn-xs" onclick="areYouSure(4)"><i
-                                                class="fa fa-times"></i>Delete
-                                        </button>
-                                    </span>
-                                    </a>
                                 </div>
 
                                 <!-- /.list-group -->
@@ -145,6 +132,21 @@ include_once 'parts/header.php';
             }
 
             function editAlert(index) {
+            jQuery.ajax({
+                    type: "POST",
+                    url: 'your_functions_address.php',
+                    dataType: 'json',
+                    data: {functionname: 'add', arguments: [1, 2]},
+
+                    success: function (obj, textstatus) {
+                                  if( !('error' in obj) ) {
+                                      yourVariable = obj.result;
+                                  }
+                                  else {
+                                      console.log(obj.error);
+                                  }
+                            }
+                });
                 document.getElementById(index).remove();
                 document.getElementById(index+"edit").remove();
             }
@@ -165,3 +167,6 @@ include_once 'parts/header.php';
 
     </body>
 </html>
+<?php
+}
+?>

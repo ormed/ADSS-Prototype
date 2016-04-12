@@ -42,51 +42,6 @@ function array_median($array) {
 }
 
 /**
- * Calculates eucilean distances for an array dataset
- *
- * @param array $sourceCoords In format array(x, y, ...)
- * @param array $sourceKey Associated array key
- * @param array $data
- * @return array Of distances to the rest of the data set
- */
-function euclideanDistance($sourceCoords, $sourceKey, $data)
-{
-    $distances = array();
-    $params_size = sizeof($sourceCoords)-1;
-    for($i = 1; $i <= $params_size; $i++) {
-        ${'x'.$i} = $sourceCoords[$i];
-    }
-    foreach ($data as $destinationKey => $destinationCoords) {
-        // Same point, ignore
-        if ($sourceKey == $destinationKey) {
-            continue;
-        }
-        $sum = 0;
-        for($i = 1; $i <= $params_size; $i++) {
-            ${'y'.$i} = $destinationCoords[$i];
-            $sum += (pow((${'x'.$i} - ${'y'.$i}), 2));
-        }
-        $distances[$destinationKey] = sqrt($sum);
-    }
-    asort($distances);
-    $sourceCoords = $distances;
-    return $sourceCoords;
-}
-
-/**
- * Returns n-nearest neighbors
- *
- * @param array $distances Distances generated above ^
- * @param mixed $key Array key of source location
- * @param int $num Of neighbors to fetch
- * @return array Of nearest neighbors
- */
-function getNearestNeighbors($distances, $key, $num)
-{
-    return array_slice($distances[$key], 0, $num, true);
-}
-
-/**
  * Gets result label from associated data
  *
  * @param array $data

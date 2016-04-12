@@ -58,14 +58,14 @@ class Notification {
     }
 
     /**
-     * get user from database
+     * get notification from database
      * return false if was not found
-     * @param array $user - a user name to search for
-     * @return array $result - found user
+     * @param array $id - notification id to search for
+     * @return array $result - found notification
      */
-    public static function getUser($user) {
+    public static function getNotification($id) {
         $db = new Database();
-        $q = "SELECT * FROM users WHERE username='{$user}'";
+        $q = "SELECT * FROM notifications WHERE id='{$id}'";
         $result = $db->createQuery($q);
         if (count($result) > 0) {
             return $result;

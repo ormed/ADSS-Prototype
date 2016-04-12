@@ -1,6 +1,7 @@
 <?php
 include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
+include_once 'database/Patient.php'
 ?>
 <body>
 <div id="wrapper">
@@ -28,7 +29,7 @@ include_once 'parts/header.php';
                                         <form class="form-inline col-xs-10 col-xs-offset-1" role="form">
                                             <div class="form-group">
                                                 <label>Author: </label>
-                                                <input class="form-control" id="author" type="text" placeholder="Dr Israel Israeli" disabled="">
+                                                <input class="form-control" id="author" type="text" placeholder="<?php echo $_SESSION['name'];?>" disabled="">
                                             </div>
                                             <div class="form-group">
                                                 <label>Date: </label>
@@ -40,84 +41,58 @@ include_once 'parts/header.php';
                                                 <label class="radio-inline"><input type="radio" name="optradio" id="selecctall">ICU Population</label>
                                             </div>
 
+                                            <?php
+                                            $results = Patient::getPatients();
+                                            ?>
+
                                             <div class="well" style="max-height: 300px;overflow: auto;">
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="1"> Israel Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="2"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="3"> John Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="4"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="5"> Jane Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="6"> Jane Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="7"> Israel Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="8"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="9"> John Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="10"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="11"> Jane Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="12"> Jane Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="13"> Israel Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="14"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="15"> John Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="16"> Israela Israeli<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="17"> Jane Doe<br>
-                                                <input type="checkbox" class="checkbox1" name="check[]" value="18"> Jane Doe<br>
+                                                <?php
+                                                foreach ($results as $result) {
+                                                    echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                }
+                                                ?>
                                             </div>
 
 
                                             <legend>Add up to 5 constraints:</legend>
                                             <div class="form-group col-xs-offset-2">
-                                                <select class="form-control">
-                                                    <option>MAP</option>
-                                                    <option>VAP</option>
-                                                    <option>BP</option>
-                                                    <option>Glucose</option>
+                                                <select class="form-control" id="parameters">
+                                                    <option value="MAP">MAP</option>
+                                                    <option value="VAP">VAP</option>
+                                                    <option value="BP">BP</option>
+                                                    <option value="Glucose">Glucose</option>
                                                 </select>
                                                 <label for="user_lic">Threshold: </label><input id="threshold" type="number" min="0" max="100" step="1" value ="50"/>
                                             </div>
 
                                             <div class="col-xs-offset-3">
-                                                <label class="radio-inline"><input type="radio" name="optradio2" checked="true">Over <i class="fa fa-chevron-right"></i></label>
-                                                <label class="radio-inline"><input type="radio" name="optradio2" >Under <i class="fa fa-chevron-left"></i></label>
+                                                <label class="radio-inline"><input type="radio" name="relative" checked="true" value=">">Over <i class="fa fa-chevron-right"></i></label>
+                                                <label class="radio-inline"><input type="radio" name="relative" value="<">Under <i class="fa fa-chevron-left"></i></label>
                                             </div>
 
                                             <div class="col-xs-offset-2">
                                                 <span>Interval to monitor: </span>
-                                                <select class="form-control">
-                                                    <option>24h</option>
-                                                    <option>48h</option>
-                                                    <option>72h</option>
-                                                    <option>Until Discharge</option>
+                                                <select class="form-control" id="interval">
+                                                    <option value="24h">24h</option>
+                                                    <option value="48h">48h</option>
+                                                    <option value="72h">72h</option>
+                                                    <option value="&infin;">Until Discharge</option>
                                                 </select>
                                             </div>
-
-                                            <button type="submit" class="btn btn-default col-xs-offset-3">Add Constraint</button>
+                                            <button type="button" class="btn btn-default col-xs-offset-3" onclick="add_constraint();">Add Constraint</button>
                                         </form>
                                     </div>
 
 
                                     <!-- /.col-lg-6 (nested) -->
                                     <div class="col-lg-6">
-                                        <h1 class="col-xs-offset-3">Preview</h1>
+                                        <h1 class="col-xs-offset-5">Preview</h1>
                                         <form role="form">
                                             <fieldset>
-                                                <div class="form-group input-group col-xs-4 col-xs-offset-2">
-                                                    <input type="text" class="form-control text-center" placeholder="MAP > 95" disabled="">
-                                                    <span class="input-group-btn">
-                                                    <button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button>
-                                                    </span>
-                                                </div>
-                                                <div class="form-group input-group col-xs-4 col-xs-offset-2">
-                                                    <input type="text" class="form-control text-center" placeholder="VAP < 90" disabled="">
-                                                    <span class="input-group-btn">
-                                                    <button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button>
-                                                    </span>
-                                                </div>
-                                                <div class="form-group input-group col-xs-4 col-xs-offset-2">
-                                                    <input type="text" class="form-control text-center" placeholder="BP > 120" disabled="">
-                                                    <span class="input-group-btn">
-                                                    <button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button>
-                                                    </span>
-                                                </div>
+                                                <div id="preview" class="center-block">
 
-                                                <button type="submit" class="btn btn-primary  col-xs-offset-5">Save</button>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary  center-block">Save</button>
                                             </fieldset>
                                         </form>
 
@@ -145,7 +120,38 @@ include_once 'parts/header.php';
                     });
                 });
 
-                function areYouSure(index) {
+                /**
+                 * Add constraint to the preview
+                 * If it has more than 5 constraints it does nothing
+                 */
+                var i = 0;
+                function add_constraint() {
+                    if(i >= 5) {
+                        window.alert("Maximum 5 constraints")
+                        return; } // break if already has 5 constraints
+                    i++;
+                    var e = document.getElementById("interval");
+                    var interval = e.options[e.selectedIndex].value;
+                    var relative = document.querySelector('input[name = "relative"]:checked').value;
+                    var threshhold = document.getElementById("threshold").value;
+                    var parameter = document.getElementById("parameters").value;
+                    document.getElementById("preview").innerHTML+="<div id='const_"+i+"' class='form-group input-group col-xs-4 col-xs-offset-4'><input type='text' class='form-control text-center' placeholder='"+parameter+" "+relative+" "+threshhold+" : "+interval+ "' disabled><span class='input-group-btn'><button class='btn btn-danger' type='button' onclick='remove_constraint("+i+");'><i class='fa fa-trash'></i></button></span></div>";
+                }
+
+                function remove_constraint(const_id) {
+                    window.alert(i);
+                    var constr = document.getElementById("const_"+const_id);
+                    var preview = document.getElementById("preview");
+                    preview.removeChild(constr);
+                    for(var j=const_id+1; j<=i; j++)
+                    {
+                        document.getElementById("const_"+j).id = "const_"+(j-1);
+                    }
+
+                    i--;
+                }
+
+                /*function areYouSure(index) {
                     var x = " Removed alert #" + index;
                     if (confirm("Are you sure?") == true) {
                         document.getElementById(index).remove();
@@ -169,7 +175,6 @@ include_once 'parts/header.php';
 
                 function selectFunction (checkall,field)
                 {
-                    window.alert("Hey");
                     if(checkall.checked==true){
                         for (i = 0; i < field.length; i++)
                             field[i].checked = true ;
@@ -177,12 +182,13 @@ include_once 'parts/header.php';
                         for (i = 0; i < field.length; i++)
                             field[i].checked = false ;
                     }
-                }
+                }*/
 
                 $(document).ready(function() {
                     $('#selecctall').click(function(event) {  //on click
                         $('.checkbox1').each(function() { //loop through each checkbox
                             this.checked = true;  //select all checkboxes with class "checkbox1"
+                            $(this).prop('disabled', true);
                         });
                     });
                 });
@@ -191,6 +197,7 @@ include_once 'parts/header.php';
                     $('#deselecctall').click(function (event) {  //on click
                         $('.checkbox1').each(function () { //loop through each checkbox
                             this.checked = false; //deselect all checkboxes with class "checkbox1"
+                            $(this).removeAttr("disabled");
                         });
                     });
                 });

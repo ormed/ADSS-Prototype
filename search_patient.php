@@ -1,7 +1,20 @@
 <?php
-//include_once 'connection/checkUser.php';
+include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
 include_once 'database/Database.php';
+
+$err = '';
+
+//check if postback
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+}
+
+if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
+
+    header('Location: index.php');
+} else {
+?>
 
 ?>
 
@@ -72,3 +85,6 @@ include_once 'parts/bottom.php';
 </body>
 
 </html>
+<?php
+}
+?>

@@ -1,51 +1,29 @@
 <?php
 include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
+include_once 'database/SimilarCases.php';
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-// Random cartesian coordinates (x, y) and labels
 
+    $neighbors = SimilarCases::KNN_Algorithm('C:/Users/Or/Desktop/Patients.csv', 1, 100);
+    debug($neighbors);
 
-    /*$data = array(
-        array(1, 2, 'red'),   // 0 =>
-        array(5, 3, 'blue'),  // 1 =>
-        array(-1, 2, 'blue'), // 2 =>
-        array(2, 5, 'red'),   // 3 =>
-        array(3, 3, 'red'),   // 4 =>
-        array(-4, 5, 'blue'), // 5 =>
-        array(2, 2, 'blue'),  // 6 =>
-        array(5, -2, 'red'),  // 7 =>
-        array(-1, -2, 'blue'),// 8 =>
-    );
-    debug($data);*/
-
-    //$file = fopen("C:/Users/Or/Desktop/Patients.csv","r");
-
+    /*
+    // Read the csv file that contains patients parameters
     $data = array();
-    $row=0;
     $file = fopen('C:/Users/Or/Desktop/Patients.csv', 'r');
     while (($line = fgetcsv($file)) !== FALSE) {
         $data[$line[0]] = $line;
-        $row++;
-        //$line is an array of the csv elements
-        //print_r($line);
     }
     fclose($file);
+    unset($data[0]); // Remove params header (i.e: age,id,bp...)
 
-    unset($data[0]); // Remove params header
-    //debug($data);
-
-
-    /*$data = array(
-        array(ID, Min_WBC, MAX_WBC, MEDIAN_WBC), // 0 =>
-        array(1, 0, 43.02, 25.21) // 1 =>
-    )*/
-// Build distance matrix
+    // Build distance matrix
     $distances = array();
     $size = sizeof($data);
     $distances[1] = euclideanDistance($data[1], 1, $data);
-// Example, target = datapoint 1, getting 10 nearest neighbors
+    // Example, target = id 1, getting 10 nearest neighbors
     $neighbors = getNearestNeighbors($distances, 1, 100);
 
     debug($neighbors);
@@ -182,7 +160,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                                             <th>#</th>
                                                             <th>Parameter</th>
                                                             <th>Target</th>
-                                                            <th class="block"></th>
+                                                            <th class="nowrap" style="width:1%"></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -190,24 +168,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                                                 <td>1</td>
                                                                 <td>Age</td>
                                                                 <td>[55-85] Years</td>
-                                                                <td class="block"><button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>Anion Gap</td>
-                                                                <td>[0.8-1.2] mg/dL</td>
-                                                                <td class="block"><button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>LOS</td>
-                                                                <td><4 Days</td>
-                                                                <td class="block"><button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>4</td>
-                                                                <td>Gender</td>
-                                                                <td>Male</td>
                                                                 <td class="block"><button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></td>
                                                             </tr>
                                                         </tbody>
@@ -220,7 +180,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
 
-                                <legend></legend>
 
 
                                 <!-- /Results -->
@@ -252,27 +211,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                                                 <td>F</td>
                                                                 <td>12</td>
                                                                 <td>Vasopressin</td>
-                                                            </tr>
-                                                            <tr id="result.entry[]">
-                                                                <td>15465</td>
-                                                                <td>45</td>
-                                                                <td>M</td>
-                                                                <td>4</td>
-                                                                <td>Ephedrin</td>
-                                                            </tr>
-                                                            <tr id="result.entry[]">
-                                                                <td>23444</td>
-                                                                <td>75</td>
-                                                                <td>M</td>
-                                                                <td>2</td>
-                                                                <td>Vitamin K</td>
-                                                            </tr>
-                                                            <tr id="result.entry[]">
-                                                                <td>34523</td>
-                                                                <td>82</td>
-                                                                <td>F</td>
-                                                                <td>25</td>
-                                                                <td>Vitamin K</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

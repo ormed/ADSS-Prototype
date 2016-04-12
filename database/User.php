@@ -4,7 +4,7 @@ include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
 
 class User {
 
-    /*
+    /**
      * function to check if form was submitted ok
      * return errors if found any
      */
@@ -15,7 +15,7 @@ class User {
         } else {
             $user = cleanInput($_POST['username']);
             $result = User::getUser($user);
-            //if user was not found in database -> create new user
+            // check if user was found in database
             if ($result) {
                 $hash = $result[0]['password'];
                 $password = $_POST['password'];

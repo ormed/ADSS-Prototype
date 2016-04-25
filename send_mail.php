@@ -13,8 +13,6 @@ else
     echo "Email sending failed";*/
 
 
-$db = new Database();
-$q = 'SELECT a.Value, b.Value FROM anion_gap a, bun b where a.id=b.rand.id';
-$result = $db->createQuery($q);
-debug($result);
-//"SELECT c.c_name, c.logo, c.email, l.id, l.title, l.type,l.budget,l.deadline,l.job_desc,l.c_id, l.time, l.vote_up from c_profile c,listing l where c.c_uid=l.c_id";
+$string = 2533274810932325;
+
+echo (gettype($string));

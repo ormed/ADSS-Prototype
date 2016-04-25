@@ -14,6 +14,17 @@ class Patient {
         return $result;
     }
 
+    /**
+     * get all patients ids in db
+     * @return array $result - all patients ids
+     */
+    public static function getPatientsId() {
+        $db = new Database();
+        $q = 'SELECT id FROM patients';
+        $result = $db->createQuery($q);
+        return $result;
+    }
+
 
 
 }

@@ -7,166 +7,208 @@ include_once 'parts/header.php';
 $err = '';
 $success = '';
 
-//Check if post back
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $err = User::testEdit();
+    //Delete the alert
+    debug($_POST);
+    // Parse the $_POST['delete_*id*']
+    $notificationId = explode("_", key(array_intersect_key($_POST, array_flip(preg_grep('/^delete_/', array_keys($_POST))))))[1];
+    Notification::deleteNotification($notificationId);
+    header('Location: alarm.php');
 }
+//else {
 
-if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
-    //User::updateUser($_POST["username"], $_POST["name"], $_POST["auth"]);
-    $success = "Done!";
-}
-else {
-
-    $results = Notification::getNotifications();
+$results = Notification::getNotifications();
 
 ?>
-    <body>
-    <div id="wrapper">
-        <?php include_once 'parts/nav.php'; ?>
-        <!-- Page Content -->
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">Alerts</h1>
-                    </div>
-                    <!-- /.col-lg-12 -->
+<body>
+<div id="wrapper">
+    <?php include_once 'parts/nav.php'; ?>
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Alerts</h1>
                 </div>
-                <!-- /.row -->
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
 
-                <form role="form" method="POST" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
-                    <div class="col-lg-6">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <i class="fa fa-bell fa-fw"></i> Recent Events List
-                            </div>
-                            <!-- /.panel-heading -->
+            <form role="form" id="alerts_form" method="POST" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bell fa-fw"></i> Recent Events List
+                        </div>
+                        <!-- /.panel-heading -->
 
-                            <div class="panel-body">
-                                <div class="list-group">
+                        <div class="panel-body">
+                            <div class="list-group">
 
-                                    <button
-                                        type="button" class="btn btn-success btn-success btn-xs" onclick="window.location='new_alarm.php'">Add New Alarm
-                                    </button>
-                                    </br></br>
+                                <button
+                                    type="button" class="btn btn-success btn-success btn-xs"
+                                    onclick="window.location='new_alarm.php'">Add New Alarm
+                                </button>
+                                </br></br>
 
-                                    <!-- Search an alert - Auto complete -->
-                                    <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control" placeholder="Search">
-                                    <datalist id="datalist1">
-                                        <option value="First Alert">
-                                    </datalist>
-
-                                    </br>
-
+                                <!-- Search an alert - Auto complete -->
+                                <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control"
+                                       placeholder="Search">
+                                <datalist id="datalist1">
                                     <?php
                                     foreach ($results as $value) {
                                     ?>
-                                    <a href="#" class="list-group-item" id="<?php echo $value['id'];?>">
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
-                                        </button>
-                                        First Alert <em>by Dr X</em>
-                                    <span class="pull-right text-muted small"><em>4 minutes ago </em><button
-                                            type="button" class="btn btn-danger btn-danger btn-xs" onclick="areYouSure(1)"><i
-                                                class="fa fa-times"></i>Delete
-                                        </button>
-                                    </span>
-                                    </a>
+                                    <option value="<?php echo $value['title']; ?>">
+                                        <?php
+                                        }
+                                        ?>
+
+                                </datalist>
+
+                                </br>
+
+                                <?php
+                                $i = 0;
+                                foreach ($results as $value) {
+
+                                    $createdTime = new DateTime($value['created_time']);
+                                    date_default_timezone_set('Asia/Tel_Aviv');
+                                    $currentTime = new DateTime();
+
+
+                                    $diff = get_timespan_string($createdTime, $currentTime);
+                                    if ($diff == FALSE) {
+                                        $dateToDisplay = date_format($createdTime, 'd/m/Y H:i');
+                                    } else {
+                                        $dateToDisplay = $diff . " ago";
+                                    }
+
+                                    if($i == 0) {
+                                    ?>
+                                        <div class="panel-group" id="accordion">
                                     <?php
                                     }
                                     ?>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <div data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value['id']; ?>">
 
-                                    <!-- Edit alert
-                                    <a href="#" class="list-group-item" id="1edit">
+                                                        <?php echo $value['title']; ?> <em>by <?php echo $value['author']; ?></em>
+                                                        <span class="pull-right text-muted small"><em><?php echo $dateToDisplay; ?></em>
+                                                        </span>
+                                                    </div>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse<?php echo $value['id']; ?>" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <button type="button" class="btn btn-warning btn-warning btn-xs"><i
+                                                            class="fa fa-pencil-square-o" onclick=""></i> Edit
+                                                    </button>
+                                                    <button
+                                                        type="button" class="btn btn-danger btn-danger btn-xs"
+                                                        name="delete_<?php echo $value['id']; ?>" onclick="deleteAlert(<?php echo $value['id']; ?>)"><i
+                                                            class="fa fa-times"></i> Delete
+                                                    </button>
+                                                    <p></p>
+                                                    <?php
+                                                    // Display the constraints
+                                                    $parts = explode(" ", $value['content']);
+                                                    $ids = explode("id:", $parts[0])[1];
+
+                                                    echo "<h5>Ids:</h5>".$ids."<h5>Constraints:</h5>";
+
+                                                    $constraints = $parts[1];
+                                                    $parts = explode("constraints:", $constraints);
+                                                    $constraints = explode(".", $parts[1]);
+                                                    foreach($constraints as $constraint) {
+                                                        if(!empty($constraint)) {
+                                                            $constraint = str_replace("for-", " : ", $constraint);
+                                                            echo "<div class='form-group input-group col-xs-3'>
+                                                                    <input type='text' class='form-control  text-center' value='".$constraint."' readonly>
+                                                                  </div>";
+
+
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <p></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    <?php /* <a href="#" class="list-group-item" id="<?php echo $value['id']; ?>">
                                         <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o" onclick="editAlert(1)"></i>Edit
+                                                class="fa fa-pencil-square-o" onclick=""></i> Edit
                                         </button>
-                                        <input type="text" id="1desc"> <em>By X</em>
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="saveChanges(1)">Save
-                                        </button>
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="cancelChanges(1)">Cancel
-                                        </button>
-                                    <span class="pull-right text-muted small"><em>4 minutes ago </em><button
-                                            type="button" class="btn btn-danger btn-danger btn-xs" onclick="areYouSure(1)"><i
-                                                class="fa fa-times"></i>Delete
-                                        </button>
-                                    </span>
-                                    </a>-->
-                                </div>
+                                        <?php echo $value['title']; ?> <em>by <?php echo $value['author']; ?></em>
+                                        <span class="pull-right text-muted small"><em><?php echo $dateToDisplay; ?>
+                                                &nbsp;</em>
+                                            <button
+                                                type="submit" class="btn btn-danger btn-danger btn-xs"
+                                                name="delete_<?php echo $value['id']; ?>"><i
+                                                    class="fa fa-times"></i> Delete
+                                            </button>
+                                        </span>
+                                    </a>*/
+                                    ?>
 
-                                <!-- /.list-group -->
-                                <!--<a href="#" class="btn btn-default btn-block">View All Alerts</a>-->
+                                    <?php
+                                    $i=1;
+                                }
+                                ?>
                             </div>
-                            <!-- /.panel-body -->
 
-                            <span id="demo"></span>
-                <!-- /.container-fluid -->
-            </div>
-            <!-- /#page-wrapper -->
+                            <!-- /.list-group -->
+                            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+                        </div>
+                        <!-- /.panel-body -->
 
-        </div>
-        <!-- /#wrapper -->
-            </form>
+                        <span id="demo"></span>
+                        <!-- /.container-fluid -->
+                    </div>
+                    <!-- /#page-wrapper -->
 
                 </div>
-            </div>
+                <!-- /#wrapper -->
+            </form>
 
-        <?php
-        include_once 'parts/bottom.php';
-        ?>
+        </div>
+    </div>
 
-        <script>
-            $(document).ready(function () {
-                $('#dataTables-example').DataTable({
-                    responsive: true
-                });
+    <?php
+    include_once 'parts/bottom.php';
+    ?>
+
+    <script>
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                responsive: true
             });
+        });
 
-            function areYouSure(index) {
-                var x = " Removed alert #" + index;
-                if (confirm("Are you sure?") == true) {
-                    document.getElementById(index).remove();
-                }
-                document.getElementById("demo").innerHTML = x;
-            }
-
-            function editAlert(index) {
-            jQuery.ajax({
-                    type: "POST",
-                    url: 'your_functions_address.php',
-                    dataType: 'json',
-                    data: {functionname: 'add', arguments: [1, 2]},
-
-                    success: function (obj, textstatus) {
-                                  if( !('error' in obj) ) {
-                                      yourVariable = obj.result;
-                                  }
-                                  else {
-                                      console.log(obj.error);
-                                  }
-                            }
-                });
+        function areYouSure(index) {
+            var x = " Removed alert #" + index;
+            if (confirm("Are you sure?") == true) {
                 document.getElementById(index).remove();
-                document.getElementById(index+"edit").remove();
             }
+            document.getElementById("demo").innerHTML = x;
+        }
 
-            function saveChanges(index) {
-                // Save the new text
-                document.getElementById(index).value =
-                // Make it visible
-
-                // Make the edit invisible
-                document.getElementById("1desc").value = "Test";
+        /**
+         * Remove alert from page and database
+         */
+        function deleteAlert() {
+            if (confirm("Are you sure?") == true) {
+                document.getElementById("alerts_form").submit();
             }
+        }
 
-            function cancelChanges(index) {
+    </script>
 
-            }
-        </script>
-
-    </body>
+</body>
 </html>
 <?php
-}
+//}
 ?>

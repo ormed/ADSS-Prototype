@@ -40,7 +40,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Prototype Login</h3>
+                    <h3 class="panel-title">Afeka Decision Support System Login</h3>
                 </div>
                 <div class="panel-body">
                     <form role="form" method="POST" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>

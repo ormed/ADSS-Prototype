@@ -1,8 +1,30 @@
 <?php
 include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
-include_once 'database/Patient.php'
+include_once 'database/Patient.php';
+include_once 'database/Notification.php';
+
+
+$err = '';
+
+// check if post back
+if (($_SERVER["REQUEST_METHOD"] == "POST")) {
+    // Set the ids array
+    $ids = Notification::getIds();
+
+    // Split the constraints
+    $constraints = Notification::getConstraints();
+
+    // Create the content string
+    $content = $ids . " ".$constraints;
+
+    // Insert the notification to database
+    Notification::insertNotification($content);
+
+    header('Location: alarm.php');
+} else {
 ?>
+
 <body>
 <div id="wrapper">
     <?php include_once 'parts/nav.php'; ?>
@@ -25,15 +47,22 @@ include_once 'database/Patient.php'
                             </div>
                             <div class="panel-body">
                                 <div class="row">
+                                    <form class="form-inline col-xs-10 col-xs-offset-1" role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
                                     <div class="col-lg-6">
-                                        <form class="form-inline col-xs-10 col-xs-offset-1" role="form">
                                             <div class="form-group">
                                                 <label>Author: </label>
-                                                <input class="form-control" id="author" type="text" placeholder="<?php echo $_SESSION['name'];?>" disabled="">
+                                                <input class="form-control" name="author" type="text" value="<?php echo $_SESSION['name'];?>" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label>Date: </label>
-                                                <input class="form-control" id="author" type="text" placeholder="<?php echo date("d/m/Y");?>" disabled="">
+                                                <input class="form-control" name="current_date" type="text" value="<?php echo date("d/m/Y");?>" readonly>
+                                            </div>
+
+                                            <p></p>
+
+                                            <div class="form-group">
+                                                <label>Alert Name: </label>
+                                                <input class="form-control" name="alert_name" type="text" placeholder="Alert name">
                                             </div>
 
                                             <div>
@@ -80,23 +109,22 @@ include_once 'database/Patient.php'
                                                 </select>
                                             </div>
                                             <button type="button" class="btn btn-default col-xs-offset-3" onclick="add_constraint();">Add Constraint</button>
-                                        </form>
                                     </div>
 
 
                                     <!-- /.col-lg-6 (nested) -->
                                     <div class="col-lg-6">
                                         <h1 class="col-xs-offset-5">Preview</h1>
-                                        <form role="form">
                                             <fieldset>
                                                 <div id="preview" class="center-block">
 
                                                 </div>
+
                                                 <button type="submit" class="btn btn-primary  center-block">Save</button>
                                             </fieldset>
-                                        </form>
-
                                     </div>
+
+                                    </form>
                                     <!-- /.col-lg-6 (nested) -->
                                 </div>
                                 <!-- /.row (nested) -->
@@ -135,17 +163,34 @@ include_once 'database/Patient.php'
                     var relative = document.querySelector('input[name = "relative"]:checked').value;
                     var threshhold = document.getElementById("threshold").value;
                     var parameter = document.getElementById("parameters").value;
-                    document.getElementById("preview").innerHTML+="<div id='const_"+i+"' class='form-group input-group col-xs-4 col-xs-offset-4'><input type='text' class='form-control text-center' placeholder='"+parameter+" "+relative+" "+threshhold+" : "+interval+ "' disabled><span class='input-group-btn'><button class='btn btn-danger' type='button' onclick='remove_constraint("+i+");'><i class='fa fa-trash'></i></button></span></div>";
+                    document.getElementById("preview").innerHTML+="<div id='const_"+i+"' class='form-group input-group col-xs-4 col-xs-offset-4'><input type='text' class='form-control text-center' id='input_"+i+"' name='input_"+i+"' value='"+parameter+" "+relative+" "+threshhold+" : "+interval+ "' readonly><span class='input-group-btn'><button class='btn btn-danger' type='button' id='delete_"+i+"' onclick='remove_constraint("+i+");'><i class='fa fa-trash'></i></button></span></div><p></p>";
                 }
 
+                /**
+                 * Delete constraint from the preview
+                 * @param const_id - the constraint id to delete
+                 */
                 function remove_constraint(const_id) {
-                    window.alert(i);
                     var constr = document.getElementById("const_"+const_id);
                     var preview = document.getElementById("preview");
                     preview.removeChild(constr);
-                    for(var j=const_id+1; j<=i; j++)
+                    var size = const_id+1;
+                    for(var j=size; j<=i; j++)
                     {
-                        document.getElementById("const_"+j).id = "const_"+(j-1);
+                        // Set the delete button
+                        var const_delete_btn = document.getElementById("delete_"+j);
+                        const_delete_btn.setAttribute("onclick","remove_constraint("+(j-1)+");")
+                        const_delete_btn.id = "delete_"+(j-1);
+
+                        // Set the div id
+                        var const_div = document.getElementById("const_"+j);
+                        const_div.id = "const_"+(j-1);
+
+                        // Set the input name
+                        var const_input = document.getElementById("input_"+j);
+                        const_input.setAttribute("name", "input_"+(j-1));
+                        const_input.id = "input_"+(j-1);
+
                     }
 
                     i--;
@@ -188,7 +233,7 @@ include_once 'database/Patient.php'
                     $('#selecctall').click(function(event) {  //on click
                         $('.checkbox1').each(function() { //loop through each checkbox
                             this.checked = true;  //select all checkboxes with class "checkbox1"
-                            $(this).prop('disabled', true);
+                            //$(this).prop('readonly', true);
                         });
                     });
                 });
@@ -197,7 +242,7 @@ include_once 'database/Patient.php'
                     $('#deselecctall').click(function (event) {  //on click
                         $('.checkbox1').each(function () { //loop through each checkbox
                             this.checked = false; //deselect all checkboxes with class "checkbox1"
-                            $(this).removeAttr("disabled");
+                            //$(this).removeAttr("readonly");
                         });
                     });
                 });
@@ -207,3 +252,6 @@ include_once 'database/Patient.php'
 
 </body>
 </html>
+<?php
+}
+?>

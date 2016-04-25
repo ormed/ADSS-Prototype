@@ -1,5 +1,5 @@
 <?php
-include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
+include_once './help_functions.php';
 
 class SimilarCases
 {
@@ -34,7 +34,7 @@ class SimilarCases
         return $current_max;
     }
 
-    public static function KNN_Algorithm($filename, $id, $neighbors_num) {
+    public static function KNN_Algorithm($filename, $id, $num_of_neighbors) {
         // Read the csv file that contains patients parameters
         $data = array();
         $file = fopen($filename, 'r');
@@ -48,7 +48,7 @@ class SimilarCases
         $distances = array();
         $distances[$id] = SimilarCases::euclideanDistance($data[$id], $id, $data);
         // Example, target = id 1, getting 10 nearest neighbors
-        $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $neighbors_num);
+        $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $num_of_neighbors);
         return $neighbors;
     }
 
@@ -60,7 +60,7 @@ class SimilarCases
      * @param array $data
      * @return array Of distances to the rest of the data set
      */
-    function euclideanDistance($sourceCoords, $sourceKey, $data)
+    static function euclideanDistance($sourceCoords, $sourceKey, $data)
     {
         $distances = array();
         $params_size = sizeof($sourceCoords)-1;
@@ -92,7 +92,7 @@ class SimilarCases
      * @param int $num Of neighbors to fetch
      * @return array Of nearest neighbors
      */
-    function getNearestNeighbors($distances, $key, $num)
+    static function getNearestNeighbors($distances, $key, $num)
     {
         return array_slice($distances[$key], 0, $num, true);
     }

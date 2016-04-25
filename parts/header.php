@@ -1,5 +1,5 @@
 <?php include_once 'help_functions.php'; ?>
-<?php include_once 'C:\wamp\www\ADSS-Prototype\database\Database.php' ?>
+<?php include_once './database/Database.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +11,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Prototype</title>
+    <?php
+    // Check if user is in alarm page - then auto refresh the page every 1 minute (60 seconds)
+    if($_SERVER["REQUEST_URI"] == "/ADSS-Prototype/alarm.php") {
+        ?>
+        <META HTTP-EQUIV="refresh" CONTENT="60">
+        <?php
+    }
+    ?>
+
+    <title>ADSS</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">

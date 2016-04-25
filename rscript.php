@@ -8,46 +8,56 @@ $result = '';
 
 //check if postback
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-    $uploadOk = 1;
-    $fileType = pathinfo($target_file,PATHINFO_EXTENSION);
-    // Check if file already exists
-    /*if (file_exists($target_file)) {
-        $err = "Sorry, file already exists.";
-        $uploadOk = 0;
-    }*/
-    // Check file size
-    if ($_FILES["fileToUpload"]["size"] > 500000) {
-        $err = "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-    // Allow certain file formats
-    if( $fileType != "R" ) {
-        $err = "Sorry, only R files are allowed.";
-        $uploadOk = 0;
-    }
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        $err = "Sorry, your file was not uploaded.";
-    // if everything is ok, try to upload file
-    } else {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            $success = "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded successfully";
-        } else {
-            $err = "Sorry, there was an error uploading your file.";
+    if($_POST['algorithm'] == "new") {
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+        $uploadOk = 1;
+        $fileType = pathinfo($target_file, PATHINFO_EXTENSION);
+        // Check if file already exists
+        /*if (file_exists($target_file)) {
+            $err = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }*/
+        // Check file size
+        if ($_FILES["fileToUpload"]["size"] > 500000) {
+            $err = "Sorry, your file is too large.";
+            $uploadOk = 0;
         }
+        // Allow certain file formats
+        if ($fileType != "R") {
+            $err = "Sorry, only R files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+            $err = "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                $success = "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded successfully";
+            } else {
+                $err = "Sorry, there was an error uploading your file.";
+            }
+        }
+    }
+    else if($_POST['algorithm'] == "sofa") {
+        // run sofa algorithm
+        $_FILES["fileToUpload"]["name"] = "C:/wamp/www/ADSS-Prototype/uploads/printx.R";
+
+    } else if($_POST['algorithm'] == "morbidity") {
+        // run morbidity
+        $err = "Run morbidity";
     }
 }
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     chdir("C:/Program Files/R/R-3.2.3/bin/i386");
     $result = shell_exec("Rscript ".$_FILES["fileToUpload"]["name"]);
-    if(empty($result))
-    {
+    //if(empty($result))
+    //{
 
         //$result = "<embed width='100%' height='100%' src='http://localhost/ADSS-Prototype/uploads/Rplots.pdf' type='application/pdf'></embed>";
-    }
+    //}
 }
 ?>
 <body>
@@ -100,13 +110,13 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                     <form role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
                                     <div class="form-group">
                                         <select id="algorithm" name="algorithm" class="form-control">
-                                            <option>SOFA</option>
-                                            <option>Morbidity</option>
-                                            <option>New</option>
+                                            <option value="sofa">SOFA</option>
+                                            <option value="morbidity">Morbidity</option>
+                                            <option value="new">New</option>
                                         </select>
                                         <div id="new_algo" style="display: none;">
                                             <p></p>
-                                            <select id="algorithm" name="algorithm" class="form-control">
+                                            <select id="algo_type" name="algo_type" class="form-control">
                                                 <option>Retro</option>
                                                 <option>Pre</option>
                                             </select>

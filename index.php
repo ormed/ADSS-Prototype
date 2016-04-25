@@ -13,7 +13,7 @@ include_once 'parts/header.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Prototype System</h1>
+                    <h1 class="page-header">Afeka Decision Support System</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>

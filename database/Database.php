@@ -1,5 +1,5 @@
 <?php
-include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
+include_once './help_functions.php';
 
 class Database
 {

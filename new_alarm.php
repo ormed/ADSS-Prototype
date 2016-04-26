@@ -6,12 +6,19 @@ include_once 'database/Notification.php';
 
 
 $err = '';
+$id_error ='';
 
 // check if post back
 if (($_SERVER["REQUEST_METHOD"] == "POST")) {
     // Set the ids array
     $ids = Notification::getIds();
 
+    if (!$ids) {
+        $id_error = "Select patient/s.";
+    }
+}
+
+if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error)) {
     // Split the constraints
     $constraints = Notification::getConstraints();
 
@@ -36,6 +43,14 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
                     <h1 class="page-header">Alerts</h1>
                 </div>
                 <!-- /.col-lg-12 -->
+
+                    <button type="button" class="btn btn-outline btn-primary"  onclick="location.href = 'alarm.php';">
+                      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back
+                    </button>
+
+
+                    <p></p>
+
             </div>
             <!-- /.row -->
 
@@ -60,26 +75,36 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
 
                                             <p></p>
 
-                                            <div class="form-group">
+                                            <div class="form-group has-error">
                                                 <label>Alert Name: </label>
-                                                <input class="form-control" name="alert_name" type="text" placeholder="Alert name">
+                                                <input class="form-control" name="alert_name" type="text" placeholder="Alert name"><i class="fa fa-exclamation-circle fa-fw" style="color:darkred"></i>
+
+
                                             </div>
 
-                                            <div>
-                                                <label class="radio-inline"><input type="radio" name="optradio" id="deselecctall" checked="checked">Target Patient(s)</label>
-                                                <label class="radio-inline"><input type="radio" name="optradio" id="selecctall">ICU Population</label>
-                                            </div>
+                                            <p></p>
+
+                                            <div class="alert alert-danger">
+                                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                                Select patient/s.
+
+                                                <div>
+                                                    <label class="radio-inline"><input class="panel panel-danger" type="radio" name="optradio" id="deselecctall" value="not_all" checked="checked">Target Patient(s)</label>
+                                                    <label class="radio-inline"><input type="radio" name="optradio" id="selecctall" value="all">ICU Population</label>
+                                                </div>
 
                                             <?php
                                             $results = Patient::getPatients();
                                             ?>
 
-                                            <div class="well" style="max-height: 300px;overflow: auto;">
-                                                <?php
-                                                foreach ($results as $result) {
-                                                    echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
-                                                }
-                                                ?>
+
+                                                <div class="well" style="max-height: 300px;overflow: auto;">
+                                                    <?php
+                                                    foreach ($results as $result) {
+                                                        echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                    }
+                                                    ?>
+                                                </div>
                                             </div>
 
 
@@ -91,12 +116,12 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
                                                     <option value="BP">BP</option>
                                                     <option value="Glucose">Glucose</option>
                                                 </select>
-                                                <label for="user_lic">Threshold: </label><input id="threshold" type="number" min="0" max="100" step="1" value ="50"/>
+                                                <label for="user_lic">Threshold: </label><input id="threshold" type="number" min="0" step="1" value ="50"/>
                                             </div>
 
                                             <div class="col-xs-offset-3">
-                                                <label class="radio-inline"><input type="radio" name="relative" checked="true" value=">">Over <i class="fa fa-chevron-right"></i></label>
-                                                <label class="radio-inline"><input type="radio" name="relative" value="<">Under <i class="fa fa-chevron-left"></i></label>
+                                                <label class="radio-inline"><input type="radio" name="relative" checked="true" value=">">Over (<i class="fa fa-chevron-right"></i>)</label>
+                                                <label class="radio-inline"><input type="radio" name="relative" value="<">Under (<i class="fa fa-chevron-left"></i>)</label>
                                             </div>
 
                                             <div class="col-xs-offset-2">
@@ -108,6 +133,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
                                                     <option value="&infin;">Until Discharge</option>
                                                 </select>
                                             </div>
+
+                                            <p></p>
+
                                             <button type="button" class="btn btn-default col-xs-offset-3" onclick="add_constraint();">Add Constraint</button>
                                     </div>
 
@@ -120,7 +148,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
 
                                                 </div>
 
-                                                <button type="submit" class="btn btn-primary  center-block">Save</button>
+                                                <button type="submit" class="btn btn-primary  center-block" style="display: none;" id="saveBtn">Save</button>
                                             </fieldset>
                                     </div>
 
@@ -158,6 +186,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
                         window.alert("Maximum 5 constraints")
                         return; } // break if already has 5 constraints
                     i++;
+                    document.getElementById("saveBtn").style.display = "block";
                     var e = document.getElementById("interval");
                     var interval = e.options[e.selectedIndex].value;
                     var relative = document.querySelector('input[name = "relative"]:checked').value;
@@ -194,6 +223,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST")) {
                     }
 
                     i--;
+                    if(i == 0) {
+                        document.getElementById("saveBtn").style.display = "none";
+                    }
                 }
 
                 /*function areYouSure(index) {

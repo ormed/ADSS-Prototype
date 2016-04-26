@@ -24,7 +24,4 @@ class Patient {
         $result = $db->createQuery($q);
         return $result;
     }
-
-
-
 }

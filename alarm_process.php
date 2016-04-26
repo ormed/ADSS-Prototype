@@ -1,27 +1,18 @@
 <?php
-if(@$_POST['add'])
-{
-    function add()
-    {
-        $a="You clicked on add fun";
-        echo $a;
-    }
-    add();
-}
-else if (@$_POST['sub'])
-{
-    function sub()
-    {
-        $a="You clicked on sub funn";
-        echo $a;
-    }
-    sub();
-}
-?>
-<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
-
-    <input type="submit" name="delete_1" Value="Call Add fun">
-    <input type="submit" name="delete_2" Value="Call Sub funn">
-    <?php echo @$a; ?>
-
-</form>
+echo "OUT";
+if (!empty($_POST["keyword"])) {
+    echo "IN";
+    $query = "SELECT * FROM notification WHERE title LIKE '" . $_POST["keyword"] . "%' ORDER BY title LIMIT 0,6";
+    $db = new Database();
+    $result = $db->createQuery($query);
+    if (!empty($result)) {
+        ?>
+        <ul id="country-list">
+            <?php
+            foreach ($result as $country) {
+                ?>
+                <li onClick="selectCountry('<?php echo $country["title"]; ?>');"><?php echo $country["title"]; ?></li>
+            <?php } ?>
+        </ul>
+    <?php }
+} ?>

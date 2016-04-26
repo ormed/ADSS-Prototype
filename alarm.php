@@ -49,11 +49,11 @@ $results = Notification::getNotifications();
                                     type="button" class="btn btn-success btn-success btn-xs"
                                     onclick="window.location='new_alarm.php'">Add New Alarm
                                 </button>
-                                </br></br>
+                                <p></p>
+                                <!-- </br></br>
 
-                                <!-- Search an alert - Auto complete -->
-                                <input type="text" name="srchAlert" id="srchAlert" list="datalist1" class="form-control"
-                                       placeholder="Search">
+                               -- <input type="text" name="searchAlert" id="searchAlert" class="form-control"  placeholder="Search">
+                                 -->
                                 <datalist id="datalist1">
                                     <?php
                                     foreach ($results as $value) {
@@ -116,7 +116,7 @@ $results = Notification::getNotifications();
                                                     $parts = explode(" ", $value['content']);
                                                     $ids = explode("id:", $parts[0])[1];
 
-                                                    echo "<h5>Ids:</h5>".$ids."<h5>Constraints:</h5>";
+                                                    echo "<b>Ids:</b></br>".$ids."</br><b>Constraints:</b></br>";
 
                                                     $constraints = $parts[1];
                                                     $parts = explode("constraints:", $constraints);
@@ -136,32 +136,11 @@ $results = Notification::getNotifications();
                                                 </div>
                                             </div>
                                         </div>
-
-
-                                    <?php /* <a href="#" class="list-group-item" id="<?php echo $value['id']; ?>">
-                                        <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                class="fa fa-pencil-square-o" onclick=""></i> Edit
-                                        </button>
-                                        <?php echo $value['title']; ?> <em>by <?php echo $value['author']; ?></em>
-                                        <span class="pull-right text-muted small"><em><?php echo $dateToDisplay; ?>
-                                                &nbsp;</em>
-                                            <button
-                                                type="submit" class="btn btn-danger btn-danger btn-xs"
-                                                name="delete_<?php echo $value['id']; ?>"><i
-                                                    class="fa fa-times"></i> Delete
-                                            </button>
-                                        </span>
-                                    </a>*/
-                                    ?>
-
                                     <?php
                                     $i=1;
                                 }
                                 ?>
                             </div>
-
-                            <!-- /.list-group -->
-                            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
                         </div>
                         <!-- /.panel-body -->
 
@@ -204,7 +183,6 @@ $results = Notification::getNotifications();
                 document.getElementById("alerts_form").submit();
             }
         }
-
     </script>
 
 </body>

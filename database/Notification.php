@@ -35,6 +35,8 @@ class Notification {
      * @return string of ids with comma (,) between them (e.g: "5,17,35")
      */
     public static function getIds() {
+        if(!isset($_POST['check']))
+            return FALSE;
         $idsString = "id:";
         foreach($_POST['check'] as $key=>$id) {
             $idsString .= $id.",";

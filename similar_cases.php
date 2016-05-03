@@ -6,67 +6,9 @@ include_once 'database/Patient.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-
     $id = $_POST['patient_id'];
     $num_of_neighbors = $_POST['num_of_neighbors'];
     $neighbors = SimilarCases::KNN_Algorithm('C:/wamp/www/ADSS-Prototype/uploads/Patients.csv', $id, $num_of_neighbors);
-    debug($neighbors);
-    ?>
-
-    <body>
-    <div id="wrapper">
-        <?php include_once 'parts/nav.php'; ?>
-        <!-- Page Content -->
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">Result</h1>
-                    </div>
-                    <!-- /.col-lg-12 -->
-                </div>
-                <!-- /.row -->
-
-                <!-- /Results -->
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" style="width:50%; height:50%">
-                            <thead>
-                            <tr>
-                                <th style="width:1%" class="text-center">#</th>
-                                <th class="text-center">ID</th>
-                                <th class="text-center">%</th>
-                            </tr>
-                            </thead>
-
-                            <tbody style="overflow-y: auto;
-                               height: 50%;
-                               width: 50%;">
-                            <?php
-                            $i = 1;
-                            foreach ($neighbors as $id => $percent) {
-                                ?>
-                                <tr>
-                                    <td style="width:1%;"><?php echo $i++; ?></td>
-                                    <td><?php echo $id; ?></td>
-                                    <td><?php echo $percent; ?></td>
-                                </tr>
-                                <?php
-                            }
-                            ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.table-responsive -->
-                </div>
-            </div>
-            <!-- /.Results -->
-
-        </div>
-    </div>
-    </body>
-
-    <?php
 
     /*
     // Read the csv file that contains patients parameters
@@ -88,7 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     debug($neighbors);
     //echo getLabel($data, $neighbors); // red*/
 
-} else {
+
+}
 
 ?>
 <body>
@@ -161,9 +104,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <label class="control-label">Operand:&nbsp;&nbsp;</label>
 
                                                 <p></p>&nbsp;&nbsp;
-                                                <select class="form-control">
-                                                    <option>Over</option>
-                                                    <option>Under</option>
+                                                <select class="form-control" id="over_under">
+                                                    <option value=">">Over ></option>
+                                                    <option value="<">Under <</option>
                                                 </select>
                                             </div>
 
@@ -171,11 +114,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <label class="control-label">Threshold:&nbsp;&nbsp;</label>
 
                                                 <p></p>
-                                                <input class="form-control" id="threshold" type="number" min="0"
-                                                       step="1" placeholder="Threshold"/>
+                                                <input class="form-control" id="threshold" type="number" min="0" step="1" placeholder="Threshold"/>
                                             </div>
                                             <p></p>
-                                            <button type="button" class="btn btn-default">Add</button>
+                                            <button type="button" class="btn btn-default" onclick="addOverUnder();">Add</button>
                                         </div>
 
                                         <p></p>
@@ -213,17 +155,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 </select>
                                             </div>
                                             <p></p>
-                                            <button type="button" class="btn btn-default">Submit</button>
                                         </div>
 
                                         <p></p>
                                         <legend></legend>
 
-                                        <button type="submit" class="btn btn-success">Sumbit</button>
-
-                                        <button type="button" class="btn btn-success col-xs-offset-5"
-                                                onclick="showResults();">Search
-                                        </button>
+                                        <button type="submit" class="btn btn-success col-xs-offset-5">Sumbit</button>
                                     </form>
                                 </div>
 
@@ -245,15 +182,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <!--<tr>
-                                                        <td>1</td>
-                                                        <td>Age</td>
-                                                        <td>[55-85] Years</td>
-                                                        <td class="block">
-                                                            <button class="btn btn-danger" type="button"><i
-                                                                    class="fa fa-trash"></i></button>
-                                                        </td>
-                                                    </tr>-->
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -266,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                                 <!-- /Results -->
-                                <div class="col-lg-12 hidden" id="results_div">
+                                <div class='col-lg-12 <?php if(!isset($neighbors)) echo "hidden";?>' id="results_div">
                                     <h1 class="text-center">Results</h1>
 
                                     <p></p>
@@ -277,21 +205,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <thead>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Age</th>
-                                                    <th>Sex</th>
-                                                    <th>LOS (days)</th>
-                                                    <th>Medications</th>
+                                                    <th>Distance</th>
+                                                    <th>Percentage (%) - 1/1+d</th>
                                                 </tr>
                                                 </thead>
 
                                                 <tbody>
-                                                <tr id="result.entry[]">
-                                                    <td>132</td>
-                                                    <td>67</td>
-                                                    <td>F</td>
-                                                    <td>12</td>
-                                                    <td>Vasopressin</td>
-                                                </tr>
+                                                <?php
+                                                if(isset($neighbors)) {
+                                                    foreach($neighbors as $key=>$value) {
+                                                ?>
+                                                    <tr id="result.entry[]">
+                                                        <td><?php echo $key;?></td>
+                                                        <td><?php echo $value;?></td>
+                                                        <td><?php echo round((1/(1+$value))*1000, 4) . "%";?></td>
+                                                    </tr>
+                                                <?php
+                                                    }
+                                                }
+                                                ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -299,10 +231,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
                                 </div>
                                 <!-- /.Results -->
-
-                                <?php
-                                }
-                                ?>
 
                             </div>
                             <!-- /.row (nested) -->
@@ -343,12 +271,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         num.innerHTML = ""+i;
                         param.innerHTML = constraint;
                         target.innerHTML = "["+from+"-"+to+"]";
-                        btn.innerHTML = "<button class='btn btn-danger' type='button'><i class='fa fa-trash'></i></button>";
+                        btn.innerHTML = "<button class='btn btn-danger' type='button' id='btn_"+i+"' onclick='deleteConstraint("+i+");'><i class='fa fa-trash'></i></button>";
                         i++;
+
+                        // Clear the values in "from" and "to" inputs
+                        document.getElementById("from").reset;
+                        document.getElementById("to").reset;
                     }
 
                     function addOverUnder() {
+                        var constraints = document.getElementById("constraints");
+                        var constraint = constraints.options[constraints.selectedIndex].value;
+                        var overUnderElement = document.getElementById("over_under");
+                        var operand = overUnderElement.options[overUnderElement.selectedIndex].value;
+                        var threshold = document.getElementById("threshold").value;
+                        var table = document.getElementById("preview_table");
+                        var row = table.insertRow((i));
+                        var num = row.insertCell(0);
+                        var param = row.insertCell(1);
+                        var target = row.insertCell(2);
+                        var btn = row.insertCell(3);
+                        num.innerHTML = ""+i;
+                        param.innerHTML = constraint;
+                        target.innerHTML = operand + " " + threshold;
+                        btn.innerHTML = "<button class='btn btn-danger' type='button' id='btn_"+i+"' onclick='deleteConstraint("+i+");'><i class='fa fa-trash'></i></button>";
+                        i++;
 
+                        // Clear the values in "from" and "to" inputs
+                        document.getElementById("threshold").reset;
+                    }
+
+                    function deleteConstraint(index) {
+                        document.getElementById("preview_table").deleteRow(index);
+                        var size = index+1;
+                        for(var j=size; j<i; j++)
+                        {
+                            // Set the delete button
+                            var const_delete_btn = document.getElementById("btn_"+j);
+                            const_delete_btn.setAttribute("onclick","deleteConstraint("+(j-1)+");")
+                            const_delete_btn.id = "btn_"+(j-1);
+                        }
+
+                        /* Don't show search btn
+                        if(i == 0) {
+                            document.getElementById("saveBtn").style.display = "none";
+                        }
+                        */
+
+                        i--;
                     }
 
                 </script>

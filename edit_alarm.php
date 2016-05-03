@@ -10,17 +10,38 @@ $id_error ='';
 $name_error = '';
 
 // check if post back
-if (($_SERVER["REQUEST_METHOD"] == "POST")) {
-    // Set the ids array
-    $ids = Notification::getIds();
+if (isset($_GET['id'])) {
+    // Parse the $_GET['id'] so it disables injection
+    $id =  filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
 
-    if (!$ids) {
-        $id_error = "Select patient/s.";
+    // Get the notification info
+    $result = Notification::getNotification($id);
+
+    if ($result == FALSE) {
+        // Invalid id
+        header('Location: alarm.php');
     }
 
-    if(empty($_POST['alert_name'])) {
-        $name_error = 'FALSE';
+    if ($result[0]['author'] != $_SESSION['name']) {
+        if ($_SESSION['auth'] != 1) {
+            // Not valid user
+            $message = "You don't have permissions!";
+            echo "<script type='text/javascript'>alert('$message');</script>";
+            header('Location: alarm.php');
+        }
     }
+
+    // Get the parts from database
+    $parts = explode(" ", $result[0]['content']);
+    $ids = explode("id:", $parts[0])[1];
+    $ids = explode(",", $ids);
+
+    $constraints = $parts[1];
+    $parts = explode("constraints:", $constraints);
+    debug($parts);
+    $constraints = explode(".", $parts[1]);
+    debug($constraints);
+
 }
 
 if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_error)) {
@@ -71,7 +92,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                     <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label>Author: </label>
-                                                <input class="form-control" name="author" type="text" value="<?php echo $_SESSION['name'];?>" readonly>
+                                                <input class="form-control" name="author" type="text" value="<?php echo $result[0]['author'];?>" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label>Date: </label>
@@ -82,7 +103,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
 
                                             <div class='form-group <?php echo (!empty($name_error) ? "has-error" : "")?>'>
                                                 <label>Alert Name: </label>
-                                                <input class="form-control" name="alert_name" type="text" placeholder="Alert name" <?php if(isset($_POST['alert_name'])) echo "value='".$_POST['alert_name']."'";?>><?php if(!empty($name_error)) { ?><i class="fa fa-exclamation-circle fa-fw" style="color:darkred"></i><?php } ?>
+                                                <input class="form-control" name="alert_name" type="text" placeholder="Alert name" <?php echo ((isset($_POST['alert_name'])) ?  "value='".$_POST['alert_name']."'" : "value='".$result[0]['title']."'");?>><?php if(!empty($name_error)) { ?><i class="fa fa-exclamation-circle fa-fw" style="color:darkred"></i><?php } ?>
 
 
                                             </div>
@@ -107,7 +128,11 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                                 <div class="well" style="max-height: 300px;overflow: auto;">
                                                     <?php
                                                     foreach ($results as $result) {
-                                                        echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                        if(in_array($result['id'], $ids)) {
+                                                            echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]' checked> $result[id]<br>";
+                                                        } else {
+                                                            echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                        }
                                                     }
                                                     ?>
                                                 </div>
@@ -151,10 +176,19 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                         <h1 class="col-xs-offset-5">Preview</h1>
                                             <fieldset>
                                                 <div id="preview" class="center-block">
-
+                                                <?php
+                                                $i = 1;
+                                                foreach($constraints as $constraint) {
+                                                        if(!empty($constraint)) {
+                                                            $constraint = str_replace("for-", " : ", $constraint);
+                                                            echo "<div id='const_".$i."' class='form-group input-group col-xs-4 col-xs-offset-4'><input type='text' class='form-control text-center' id='input_".$i."' name='input_".$i."' value='".$constraint."' readonly><span class='input-group-btn'><button class='btn btn-danger' type='button' id='delete_".$i."' onclick='remove_constraint(".$i.");'><i class='fa fa-trash'></i></button></span></div><p></p>";
+                                                            $i++;
+                                                        }
+                                                    }
+                                                ?>
                                                 </div>
 
-                                                <button type="submit" class="btn btn-primary  center-block" style="display: none;" id="saveBtn">Save</button>
+                                                <button type="submit" class="btn btn-primary  center-block" id="saveBtn">Save</button>
                                             </fieldset>
                                     </div>
 

@@ -7,10 +7,9 @@ include_once 'parts/header.php';
 $err = '';
 $success = '';
 
+// ************** Delete the alert **************//
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //Delete the alert
-    debug($_POST);
-    // Parse the $_POST['delete_*id*']
+    // Parse the $_POST['delete_*id*'] to get the *id* only
     $notificationId = explode("_", key(array_intersect_key($_POST, array_flip(preg_grep('/^delete_/', array_keys($_POST))))))[1];
     Notification::deleteNotification($notificationId);
     header('Location: alarm.php');
@@ -75,7 +74,6 @@ $results = Notification::getNotifications();
                                     date_default_timezone_set('Asia/Tel_Aviv');
                                     $currentTime = new DateTime();
 
-
                                     $diff = get_timespan_string($createdTime, $currentTime);
                                     if ($diff == FALSE) {
                                         $dateToDisplay = date_format($createdTime, 'd/m/Y H:i');
@@ -102,21 +100,29 @@ $results = Notification::getNotifications();
                                             </div>
                                             <div id="collapse<?php echo $value['id']; ?>" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    <button type="button" class="btn btn-warning btn-warning btn-xs"><i
-                                                            class="fa fa-pencil-square-o" onclick=""></i> Edit
+                                                    <?php if($value['author'] == $_SESSION['name'] || $_SESSION['auth'] == 1) { ?>
+                                                    <button type="button" class="btn btn-warning btn-warning btn-xs" onclick="location.href = 'edit_alarm.php?id=<?php echo $value['id']; ?>';">
+                                                            <i class="fa fa-pencil-square-o"></i> Edit
                                                     </button>
+
                                                     <button
-                                                        type="button" class="btn btn-danger btn-danger btn-xs"
-                                                        name="delete_<?php echo $value['id']; ?>" onclick="deleteAlert(<?php echo $value['id']; ?>)"><i
+                                                        type="submit" class="btn btn-danger btn-danger btn-xs"
+                                                        name="delete_<?php echo $value['id']; ?>" onclick="return confirm('Are you sure you want to delete this alert?');"><i
                                                             class="fa fa-times"></i> Delete
                                                     </button>
+                                                    <?php } ?>
                                                     <p></p>
                                                     <?php
                                                     // Display the constraints
                                                     $parts = explode(" ", $value['content']);
                                                     $ids = explode("id:", $parts[0])[1];
+                                                    $ids = str_replace(",",", ", $ids);
 
-                                                    echo "<b>Ids:</b></br>".$ids."</br><b>Constraints:</b></br>";
+                                                    echo "<b>Ids:</b></br>";
+                                                    ?>
+                                                    <textarea class='form-control' style="resize: vertical;" readonly><?php echo $ids; ?></textarea>
+                                                    <?php
+                                                    echo "</br><b>Constraints:</b></br>";
 
                                                     $constraints = $parts[1];
                                                     $parts = explode("constraints:", $constraints);
@@ -127,8 +133,6 @@ $results = Notification::getNotifications();
                                                             echo "<div class='form-group input-group col-xs-3'>
                                                                     <input type='text' class='form-control  text-center' value='".$constraint."' readonly>
                                                                   </div>";
-
-
                                                         }
                                                     }
                                                     ?>
@@ -167,21 +171,15 @@ $results = Notification::getNotifications();
             });
         });
 
-        function areYouSure(index) {
-            var x = " Removed alert #" + index;
-            if (confirm("Are you sure?") == true) {
-                document.getElementById(index).remove();
-            }
-            document.getElementById("demo").innerHTML = x;
-        }
-
         /**
          * Remove alert from page and database
          */
         function deleteAlert() {
-            if (confirm("Are you sure?") == true) {
-                document.getElementById("alerts_form").submit();
-            }
+            var el = document.getElementById('alerts_form');
+
+            el.addEventListener('submit', function(){
+                return confirm('Are you sure you want to delete the alert?');
+            }, false);
         }
     </script>
 

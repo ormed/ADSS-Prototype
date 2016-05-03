@@ -58,13 +58,10 @@
                 <li>
                     <a href="rscript.php">Run Algorithm</a>
                 </li>
-                <li>
-                    <a href="setupDB.php">Set DB</a>
-                </li>
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
-        <div id="footer">Copyright &copy; Afeka Decision Support System</div>
+        <div>Copyright &copy; Afeka Decision Support System</div>
     </div>
     <!-- /.navbar-static-side -->
 </nav>

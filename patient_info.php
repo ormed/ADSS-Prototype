@@ -1,7 +1,15 @@
 <?php
 include_once 'connection/checkUser.php';
-
 include_once 'parts/header.php';
+
+if(!isset($_GET['id'])) {
+    header('Location: index.php');
+    //$id = $_GET['id'];
+
+    // Show the graph of $id
+
+}
+
 ?>
 
 <body>

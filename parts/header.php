@@ -12,10 +12,10 @@
     <meta name="author" content="">
 
     <?php
-    // Check if user is in alarm page - then auto refresh the page every 1 minute (60 seconds)
+    // Check if user is in alarm page - then auto refresh the page every 5 minutes (300 seconds)
     if($_SERVER["REQUEST_URI"] == "/ADSS-Prototype/alarm.php") {
         ?>
-        <META HTTP-EQUIV="refresh" CONTENT="60">
+        <META HTTP-EQUIV="refresh" CONTENT="300">
         <?php
     }
     ?>

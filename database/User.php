@@ -35,20 +35,41 @@ class User {
      * return errors if found any
      */
     public static function testEdit() {
+        debug($_POST);
         $err = '';
-        if(isset($_POST['username'])) {
-            if(empty($_POST['username']) || empty($_POST['name'])) {
+        // Parse the $_POST['submit*id*'] to get the *id* only
+        $userId = explode("submit", key(array_intersect_key($_POST, array_flip(preg_grep('/^submit/', array_keys($_POST))))))[1];
+
+        if(isset($_POST['username'.$userId])) {
+            if(empty($_POST['username'.$userId]) || empty($_POST['name'.$userId])) {
                 $err = "Please fill in all the fields.";
                 return $err;
             } else {
                 $string_exp = "/^[A-Za-z .'-]+$/";
-                if (!preg_match($string_exp, $_POST['name'])) {
+                if (!preg_match($string_exp, $_POST['name'.$userId])) {
                     $err = 'The name you entered does not appear to be valid.';
                     return $err;
                 }
-                if(User::getUser($_POST['username'])) {
-                    $err = "Username is already exist.";
-                    return $err;
+
+                if($_SESSION['auth'] == 1) {
+                    // Admin can change other users information
+                    $selected = $_POST['form_select'];
+                    $usernameBefore = $_POST['username'.$selected.'before'];
+                    $usernameAfter = $_POST['username'.$selected];
+                    if($usernameBefore != $usernameAfter) {
+                        // changed username - check if the new username exists
+                        if(User::getUser($_POST['username'.$userId])) {
+                            $err = "Username is already exist.";
+                            return $err;
+                        }
+                    }
+                }
+
+                if($_POST['username'.$userId] != $_SESSION['user'] ) {
+                    if(User::getUser($_POST['username'.$userId])) {
+                        $err = "Username is already exist.";
+                        return $err;
+                    }
                 }
             }
         }

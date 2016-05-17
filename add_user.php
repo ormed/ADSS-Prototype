@@ -105,8 +105,6 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
 </div>
 <!-- /#wrapper -->
 
-<script src="js/pw_strength.js"></script>
-
 <?php
 include_once 'parts/bottom.php';
 include_once 'parts/footer.php';

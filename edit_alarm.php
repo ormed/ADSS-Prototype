@@ -84,7 +84,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                New Notifier
+                                Edit Notifier
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -220,7 +220,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                  * Add constraint to the preview
                  * If it has more than 5 constraints it does nothing
                  */
-                var i = 0;
+                var i = <?php echo json_encode($i); ?>;;
                 function add_constraint() {
                     if(i >= 5) {
                         window.alert("Maximum 5 constraints")

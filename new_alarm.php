@@ -9,6 +9,11 @@ $err = '';
 $id_error ='';
 $name_error = '';
 
+if (isset($_GET['id'])) {
+    // Parse the $_GET['id'] so it disables injection
+    $id =  filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+}
+
 // check if post back
 if (($_SERVER["REQUEST_METHOD"] == "POST")) {
     // Set the ids array
@@ -35,6 +40,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
 
     header('Location: alarm.php');
 } else {
+debug($_POST);
 ?>
 
 <body>
@@ -50,7 +56,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                 <!-- /.col-lg-12 -->
 
                     <button type="button" class="btn btn-outline btn-primary"  onclick="location.href = 'alarm.php';">
-                      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back
+                      <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> All Alerts
                     </button>
 
 
@@ -107,7 +113,15 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                                 <div class="well" style="max-height: 300px;overflow: auto;">
                                                     <?php
                                                     foreach ($results as $result) {
-                                                        echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                        if(isset($id)) {
+                                                            if($id == $result['id']) {
+                                                                echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]' checked> $result[id]<br>";
+                                                            } else {
+                                                                echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                            }
+                                                        } else {
+                                                            echo "<input type='checkbox' class='checkbox1' name='check[]' value='$result[id]'> $result[id]<br>";
+                                                        }
                                                     }
                                                     ?>
                                                 </div>

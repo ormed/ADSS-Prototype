@@ -51,11 +51,11 @@ $results = Patient::getBedPatients();
                                         <!-- Patient info -->
                                         <div class="alert alert-info">
                                         <span style="font-family: monospace; font-size: large; color: darkblue;">
-                                            <b>Age:</b> <?php echo $value['age'] ?>
+                                            <b>Age:</b> <?php if($value['age']=='NULL') { echo ""; } else { echo $value['age']; } ?>
                                             </br>
                                             <b>LOS:</b> <?php echo $value['los']; ?>
                                             </br>
-                                            <b>Gender:</b> <?php echo $value['los']; ?>
+                                            <b>Gender:</b> <?php echo $value['gender']; ?>
                                         </span>
                                         </div>
                                     </div>

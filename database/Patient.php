@@ -32,7 +32,7 @@ class Patient {
      */
     public static function getBedPatients() {
         $db = new Database();
-        $q = 'SELECT p.`id`, p.`length of stay` as los, a.`Value` as age FROM patients p, age a WHERE a.`rand.id`=p.`id` ORDER BY p.`admission_time` LIMIT 4';
+        $q = 'SELECT `id`, `length of stay` as los, age, gender FROM patients ORDER BY `admission_time` DESC LIMIT 4';
         $result = $db->createQuery($q);
         return $result;
     }

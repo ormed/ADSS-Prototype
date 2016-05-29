@@ -40,7 +40,6 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
 
     header('Location: alarm.php');
 } else {
-debug($_POST);
 ?>
 
 <body>

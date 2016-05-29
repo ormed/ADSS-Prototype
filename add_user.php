@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
-
     User::newUser($_POST['username'], $_POST['password'], $_POST['name'], $_POST['auth']);
     $success = 'User '.$_POST['username'].' has been created.';
     header('Location: add_user.php');

@@ -46,13 +46,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else if($_POST['algorithm'] == "morbidity") {
         // run morbidity
-        $err = "Run morbidity";
+        $err = "Morbidity not yet implemented";
     }
 }
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
     chdir("C:/Program Files/R/R-3.2.3/bin/i386");
-    $result = shell_exec("Rscript ".$_FILES["fileToUpload"]["name"]);
+    $result = shell_exec("Rscript C:/wamp/www/ADSS-Prototype/uploads/".$_FILES["fileToUpload"]["name"]);
+    debug($result);
+    //$result = explode(" ", $result)[1];
+
+
     //if(empty($result))
     //{
 
@@ -68,7 +72,7 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Run Algorithm</h1>
+                    <h1 class="page-header">Run Algorithms</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -96,17 +100,6 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                             <?php echo $success ?>
                                         </div>
                                     <?php } ?>
-                                    <?php if (!empty($result)) { ?>
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading">
-                                                    Result
-                                                </div>
-                                                <div class="panel-body">
-                                                    <?php echo $result ?>
-                                                </div>
-                                            </div>
-                                        <?php } ?>
-
                                     <form role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
                                     <div class="form-group">
                                         <select id="algorithm" name="algorithm" class="form-control">
@@ -124,6 +117,16 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                             <input type="file" name="fileToUpload" id="fileToUpload">
                                         </div>
                                     </div>
+                                        <?php if (!empty($result)) { ?>
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading">
+                                                    Result
+                                                </div>
+                                                <div class="panel-body">
+                                                    <?php echo $result ?>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
                                         <p></p>
                                         <input type="submit" class="btn btn-success" value="Submit" name="submit">
                                     </form>

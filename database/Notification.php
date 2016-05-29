@@ -1,5 +1,4 @@
 <?php
-@session_start();
 include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
 
 class Notification {
@@ -26,6 +25,84 @@ class Notification {
         }
         $q = "INSERT INTO `adss`.`notification` (`author`, `created_time`, `title`, `content`) VALUES
              ('{$_SESSION['name']}', '{$dateString}', '{$_POST['alert_name']}', '{$content}');";
+        $db->createQuery($q);
+    }
+
+    /**
+     * Update the notification with new contents
+     */
+    public static function editNotification($content, $dateString, $title, $notificationId) {
+        debug($content);
+        debug($notificationId);
+        debug($title);
+        debug($dateString);
+        $db = new Database();
+        $q = "UPDATE `notification` SET `content`='{$content}', `created_time`='{$dateString}', `title`='{$title}' WHERE `id`='{$notificationId}';";
+        $db->createQuery($q);
+    }
+
+    /**
+     * delete the out of date constraints & notifications
+     */
+    public static function deleteOldNotifications() {
+        // Get all the notifications
+        $results = Notification::getNotifications();
+
+        // Iterate all the notifications to check which of them to remove or remain
+        foreach ($results as $value) {
+            $notificationId = $value['id'];
+            // Get the current date time
+            date_default_timezone_set('Asia/Tel_Aviv');
+            $currentTime = new DateTime();
+
+            // Get the constraints
+            $parts = explode(" ", $value['content']);
+            $ids = $parts[0];
+            $constraints = $parts[1];
+            $parts = explode("constraints:", $constraints);
+            $constraints = explode(".", $parts[1]);
+
+            $newContent = "";
+
+            // Iterate all the constraints in a notification to check which of them to remove or remain
+            foreach($constraints as $constraint) {
+                if(!empty($constraint)) {
+                    $constraint = str_replace("for-", " : ", $constraint);
+                    $interval = explode(":", $constraint)[1];
+                    if($interval != " inf") {
+                        $interval = explode("h", $interval)[0];
+                        $interval = ltrim($interval, ' ');
+                        $createdTime = new DateTime($value['created_time']);
+                        $intervalTime = $createdTime->modify("+".$interval." hours");
+                        if($currentTime < $intervalTime) {
+                            // Add to constraint - this is still valid interval
+                            $newContent .= str_replace(" : ", "for-", $constraint).".";
+                        }
+                    } else {
+                        // Interval is infinite so it will not be deleted
+                        $newContent .= str_replace(" : ", "for-", $constraint).".";
+                    }
+                }
+            }
+
+            if(empty($newContent)) {
+                // Remove the notification - no constraints remained
+                Notification::deleteNotification($notificationId);
+            } else {
+                // Update the notification
+                $updatedContent = $ids." constraints:".$newContent;
+                Notification::updateNotification($updatedContent, $notificationId);
+            }
+        }
+    }
+
+    /**
+     * Update the notification with new content
+     * @param $content - the new constraints to add
+     */
+    public static function updateNotification($content, $notificationId) {
+        $db = new Database();
+        $q = "UPDATE `notification` SET `content`='{$content}' WHERE `id`='{$notificationId}';";
         $db->createQuery($q);
     }
 
@@ -58,6 +135,7 @@ class Notification {
             if(!in_array($const_arr[4], array("24h", "48h", "72h"), true)) { // == "&infin") {
                 $const_arr[4] = "inf";
             }
+            // constraintsString will look like: MAP>50for-24h.
             $constraintsString .= $const_arr[0].$const_arr[1].$const_arr[2]."for-".$const_arr[4].".";
             $i++;
         }

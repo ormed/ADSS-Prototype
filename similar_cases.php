@@ -4,6 +4,11 @@ include_once 'parts/header.php';
 include_once 'database/SimilarCases.php';
 include_once 'database/Patient.php';
 
+if (isset($_GET['id'])) {
+    // Parse the $_GET['id'] so it disables injection
+    $id =  filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $id = $_POST['patient_id'];
@@ -41,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-8 ">
                     <h1 class="page-header">Search Case Form</h1>
                 </div>
                 <!-- /.col-lg-12 -->
@@ -49,14 +54,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- /.row -->
 
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-8">
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <form class="form-inline col-xs-10 col-xs-offset-1" role="form"
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-4">
+                                    <form class="form-inline col-xs-10 col-xs-offset-1 col-sm-12 col-md-12 col-sm-offset-1 col-md-offset-1" role="form"
                                           method="POST"
                                           action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+
+
+                                        <div class="input-group">
+                                            <div class="form-group">
+                                                <label class="control-label">Select Patient: </label>
+
+                                                <p></p>
+                                                <?php
+                                                $results = Patient::getPatientsId();
+                                                ?>
+                                                <select class="form-control" name="patient_id">
+                                                    <?php
+                                                    foreach ($results as $result) {
+                                                        if(isset($id)) {
+                                                            if($id == $result['id']) {
+                                                                echo "<option value='$result[id]' selected>$result[id]</option>";
+                                                            } else {
+                                                                echo "<option value='$result[id]'>$result[id]</option>";
+                                                            }
+                                                        } else {
+                                                            echo "<option value='$result[id]'>$result[id]</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <p></p>
+
+                                            <div class="form-group">
+                                                <label class="control-label">Select Number of
+                                                    Neighbors: </label>
+
+                                                <p></p>
+                                                <select class="form-control" name="num_of_neighbors">
+                                                    <?php
+                                                    for ($i = 0; $i <= 50; $i ++) {
+                                                        echo "<option value='$i'>$i</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <p></p>
+                                        </div>
+
+                                        <p></p>
+                                        <legend></legend>
 
                                         <div class="input-group">
                                             <div class="form-group">
@@ -123,49 +174,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <p></p>
                                         <legend></legend>
 
-                                        <div class="input-group">
-                                            <div class="form-group">
-                                                <label class="control-label">Select Patient ID: </label>
+                                        <button type="submit" class="btn btn-success col-xs-offset-11">Search</button>
 
-                                                <p></p>
-                                                <?php
-                                                $results = Patient::getPatientsId();
-                                                ?>
-                                                <select class="form-control" name="patient_id">
-                                                    <?php
-                                                    foreach ($results as $result) {
-                                                        echo "<option value='$result[id]'>$result[id]</option>";
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                            <p></p>
-
-                                            <div class="form-group">
-                                                <label class="control-label">Select Number of
-                                                    Neighbors: </label>
-
-                                                <p></p>
-                                                <select class="form-control" name="num_of_neighbors">
-                                                    <?php
-                                                    for ($i = 0; $i <= 500; $i += 50) {
-                                                        echo "<option value='$i'>$i</option>";
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                            <p></p>
-                                        </div>
-
-                                        <p></p>
-                                        <legend></legend>
-
-                                        <button type="submit" class="btn btn-success col-xs-offset-5">Sumbit</button>
-                                    </form>
                                 </div>
 
                                 <!-- /.col-lg-6 (nested) -->
-                                <div class="col-lg-6">
+                                <div class="col-sm-6 col-md-6 col-xs-4 ">
                                     <h1 class="text-center">Preview</h1>
 
                                     <div id="preview" class="center-block">
@@ -188,13 +202,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <!-- /.table-responsive -->
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary  center-block">Search</button>
+                                    </form>
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
 
 
                                 <!-- /Results -->
-                                <div class='col-lg-12 <?php if(!isset($neighbors)) echo "hidden";?>' id="results_div">
+                                <div class='col-sm-12 col-md-12 col-xs-8 <?php if(!isset($neighbors)) echo "hidden";?>' id="results_div">
                                     <h1 class="text-center">Results</h1>
 
                                     <p></p>
@@ -205,8 +219,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <thead>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Distance</th>
-                                                    <th>Percentage (%) - 1/1+d</th>
+                                                    <?php
+                                                    debug($_POST);
+                                                    ?>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Percentage (%)</th>
                                                 </tr>
                                                 </thead>
 
@@ -217,7 +236,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 ?>
                                                     <tr id="result.entry[]">
                                                         <td><?php echo $key;?></td>
-                                                        <td><?php echo $value;?></td>
+                                                        <td><?php //echo $value;?></td>
+                                                        <td><?php //echo $value;?></td>
+                                                        <td><?php //echo $value;?></td>
                                                         <td><?php echo round((1/(1+$value))*1000, 4) . "%";?></td>
                                                     </tr>
                                                 <?php
@@ -252,7 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
 
                     $("#result\\.entry\\[\\]").click(function () {
-                        location.href = 'patient_info.php';
+                        location.href = 'patient_info.php?id=';
                     });
 
 
@@ -295,6 +316,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         param.innerHTML = constraint;
                         target.innerHTML = operand + " " + threshold;
                         btn.innerHTML = "<button class='btn btn-danger' type='button' id='btn_"+i+"' onclick='deleteConstraint("+i+");'><i class='fa fa-trash'></i></button>";
+
                         i++;
 
                         // Clear the values in "from" and "to" inputs
@@ -310,6 +332,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             var const_delete_btn = document.getElementById("btn_"+j);
                             const_delete_btn.setAttribute("onclick","deleteConstraint("+(j-1)+");")
                             const_delete_btn.id = "btn_"+(j-1);
+                            // Change the # in the table
+                            document.getElementById("preview_table").rows[j-1].cells.item(0).innerHTML = ""+(j-1);
                         }
 
                         /* Don't show search btn

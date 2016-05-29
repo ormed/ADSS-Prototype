@@ -60,8 +60,9 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                        value="">
                             </div>
 
-                            <div>
+                            <div class="form-group">
                                 <input type="submit" value="Login" class="btn-lg btn-block btn btn-success"/>
+                                <input type="reset" value="Reset" class="btn-lg btn-block btn btn-primary"/>
                             </div>
 
                         </fieldset>

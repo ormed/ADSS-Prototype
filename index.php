@@ -1,7 +1,12 @@
 <?php
 include_once 'connection/checkUser.php';
-
 include_once 'parts/header.php';
+include_once 'database/Patient.php';
+
+$result = Patient::getBedPatients();
+
+debug($result);
+
 ?>
 
 <body>
@@ -24,128 +29,192 @@ include_once 'parts/header.php';
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <a class="btn btn-large btn-primary" onclick="openSOFA(1);"><i class="fa fa-search fa-3x"></i> SOFA</a>
-                                    <div class="hidden" id="sofa1">
-                                        </br>
-                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
-                                        </br></br>
-                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
-                                    </div>
-                                    </br></br>
-                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
+                                <div class="text-center">
+                                    <div style="font-family: monospace; font-size: 200%; color: slategray;">Bed 1</div>
                                 </div>
-                                </br></br>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">Israel Israeli</div>
+                                <legend></legend>
+                                <div style="width:50%; height: 100%; display: inline-block; float: left;">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; left: 10px; width: 50%;">
+                                        <!-- Patient info -->
+    <pre style="font-family: monospace; white-space: pre-wrap; font-size: large"><b>Age:</b> 50
+<b>LOS:</b> 6
+<b>Gender:</b> Male</pre>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; left: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id=<?php echo $result[0]['id']?>"><i
+                                                class="fa fa-bell-o"></i><span style="font-family: monospace;"> Create Alarm</span></a>
+                                    </div>
+                                </div>
+                                </br></br></br></br></br>
+                                <div style="width:50%; height: 100%; display: inline-block; float: right">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="sepsis.php?id=<?php echo $result[0]['id']?>"><span
+                                                style="font-family: monospace"> Sepsis</span></a>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 90px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="mortality.php?id=<?php echo $result[0]['id']?>"><span
+                                                style="font-family: monospace"> Mortality</span></a>
+                                    </div>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="similar_cases.php?id=<?php echo $result[0]['id']?>"><span
+                                                style="font-family: monospace"> Search Cases</span></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="patient_info.php">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Patient</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
                     </div>
                 </div>
+
                 <div class="col-lg-3 col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <a class="btn btn-large btn-primary" onclick="openSOFA(2);"><i class="fa fa-search fa-3x"></i> SOFA</a>
-                                    <div class="hidden" id="sofa2">
-                                        </br>
-                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
-                                        </br></br>
-                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
-                                    </div>
-                                    </br></br>
-                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
+                                <div class="text-center">
+                                    <div style="font-family: monospace; font-size: 200%; color: slategray;">Bed 2</div>
                                 </div>
-                                </br></br>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">Israel Israeli</div>
+                                <legend></legend>
+                                <div style="width:50%; height: 100%; display: inline-block; float: left;">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; left: 10px; width: 50%;">
+                                        <!-- Patient info -->
+    <pre style="font-family: monospace; white-space: pre-wrap; font-size: large"><b>Age:</b> 64
+<b>LOS:</b> 8
+<b>Gender:</b> Female</pre>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; left: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id=<?php echo $result[1]['id']?>"><i
+                                                class="fa fa-bell-o"></i><span style="font-family: monospace;"> Create Alarm</span></a>
+                                    </div>
+                                </div>
+                                </br></br></br></br></br>
+                                <div style="width:50%; height: 100%; display: inline-block; float: right">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id=<?php echo $result[1]['id']?>"><span
+                                                style="font-family: monospace"> Sepsis</span></a>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 90px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id=<?php echo $result[1]['id']?>"><span
+                                                style="font-family: monospace"> Mortality</span></a>
+                                    </div>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id=<?php echo $result[0]['id']?>"><span
+                                                style="font-family: monospace"> Search Cases</span></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="patient_info.php">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Patient</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-lg-3 col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <a class="btn btn-large btn-primary" onclick="openSOFA(3);"><i class="fa fa-search fa-3x"></i> SOFA</a>
-                                    <div class="hidden" id="sofa3">
-                                        </br>
-                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
-                                        </br></br>
-                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
-                                    </div>
-                                    </br></br>
-                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
+                                <div class="text-center">
+                                    <div style="font-family: monospace; font-size: 200%; color: slategray;">Bed 3</div>
                                 </div>
-                                </br></br>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">Israel Israeli</div>
+                                <legend></legend>
+                                <div style="width:50%; height: 100%; display: inline-block; float: left;">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; left: 10px; width: 50%;">
+                                        <!-- Patient info -->
+    <pre style="font-family: monospace; white-space: pre-wrap; font-size: large"><b>Age:</b> 62
+<b>LOS:</b> 2
+<b>Gender:</b> Female</pre>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; left: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><i
+                                                class="fa fa-bell-o"></i><span style="font-family: monospace;"> Create Alarm</span></a>
+                                    </div>
+                                </div>
+                                </br></br></br></br></br>
+                                <div style="width:50%; height: 100%; display: inline-block; float: right">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Sepsis</span></a>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 90px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Mortality</span></a>
+                                    </div>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Search Cases</span></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="patient_info.php">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Patient</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
                     </div>
                 </div>
+
                 <div class="col-lg-3 col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <a class="btn btn-large btn-primary" onclick="openSOFA(4);"><i class="fa fa-search fa-3x"></i> SOFA</a>
-                                    <div class="hidden" id="sofa4">
-                                        </br>
-                                        <span class = "label label-warning" style="font-size: 13pt">SOFA: 22</span>
-                                        </br></br>
-                                        <span class="label label-danger" style="font-size: 13pt">Mortality: 78.57%</span>
-                                    </div>
-                                    </br></br>
-                                    <a class="btn btn-large btn-primary" href="patient_info.php"><i class="fa fa-tag fa-3x"></i> Cluster</a>
+                                <div class="text-center">
+                                    <div style="font-family: monospace; font-size: 200%; color: slategray;">Bed 4</div>
                                 </div>
-                                </br></br>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">Israel Israeli</div>
+                                <legend></legend>
+                                <div style="width:50%; height: 100%; display: inline-block; float: left;">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; left: 10px; width: 50%;">
+                                        <!-- Patient info -->
+    <pre style="font-family: monospace; white-space: pre-wrap; font-size: large"><b>Age:</b> 80
+<b>LOS:</b> 15
+<b>Gender:</b> Male</pre>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; left: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><i
+                                                class="fa fa-bell-o"></i><span style="font-family: monospace;"> Create Alarm</span></a>
+                                    </div>
+                                </div>
+                                </br></br></br></br></br>
+                                <div style="width:50%; height: 100%; display: inline-block; float: right">
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 40px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Sepsis</span></a>
+                                    </div>
+                                    </br>
+                                    <div class="panel-body"
+                                         style="position:absolute; top: 90px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Mortality</span></a>
+                                    </div>
+                                    <div class="panel-body"
+                                         style="position:absolute; bottom: 20px; right: 10px; width: 50%;">
+                                        <a class="btn btn-large btn-primary btn-block" href="new_alarm.php?id="><span
+                                                style="font-family: monospace"> Search Cases</span></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="patient_info.php">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Patient</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -160,12 +229,11 @@ include_once 'parts/header.php';
 <?php include_once 'parts/bottom.php'; ?>
 
 <script>
-    function openSOFA(index)
-    {
-        if(document.getElementById("sofa"+index).getAttribute("class") != "") {
-            document.getElementById("sofa"+index).setAttribute("class", "");
+    function openSOFA(index) {
+        if (document.getElementById("sofa" + index).getAttribute("class") != "") {
+            document.getElementById("sofa" + index).setAttribute("class", "");
         } else {
-            document.getElementById("sofa"+index).setAttribute("class", "hidden");
+            document.getElementById("sofa" + index).setAttribute("class", "hidden");
         }
     }
 </script>

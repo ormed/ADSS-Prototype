@@ -1,14 +1,15 @@
 <?php
-@session_start();
-include_once 'C:\wamp\www\ADSS-Prototype\help_functions.php';
+include_once './help_functions.php';
 
-class User {
+class User
+{
 
     /**
      * function to check if form was submitted ok
      * return errors if found any
      */
-    public static function testSignIn() {
+    public static function testSignIn()
+    {
         $err = '';
         if ((empty($_POST['username'])) || (empty($_POST['password']))) {
             $err = "Please fill in all the form";
@@ -34,45 +35,55 @@ class User {
      * function to check if edit form was submitted ok
      * return errors if found any
      */
-    public static function testEdit() {
+    public static function testEdit()
+    {
         debug($_POST);
         $err = '';
         // Parse the $_POST['submit*id*'] to get the *id* only
         $userId = explode("submit", key(array_intersect_key($_POST, array_flip(preg_grep('/^submit/', array_keys($_POST))))))[1];
 
-        if(isset($_POST['username'.$userId])) {
-            if(empty($_POST['username'.$userId]) || empty($_POST['name'.$userId])) {
+        if (empty($_POST['name' . $userId])) {
+            $err = "Please fill in all the fields.";
+            return $err;
+        } else {
+            $string_exp = "/^[A-Za-z .'-]+$/";
+            if (!preg_match($string_exp, $_POST['name' . $userId])) {
+                $err = 'The name you entered does not appear to be valid.';
+                return $err;
+            }
+        }
+
+        if(!empty($_POST['newpass'.$userId])) {
+            if(empty($_POST['confirmpass'.$userId])) {
                 $err = "Please fill in all the fields.";
                 return $err;
             } else {
-                $string_exp = "/^[A-Za-z .'-]+$/";
-                if (!preg_match($string_exp, $_POST['name'.$userId])) {
-                    $err = 'The name you entered does not appear to be valid.';
+                if($_POST['newpass'.$userId] != $_POST['confirmpass'.$userId]) {
+                    $err = "Wrong confirm password!";
                     return $err;
                 }
-
-                if($_SESSION['auth'] == 1) {
-                    // Admin can change other users information
-                    $selected = $_POST['form_select'];
-                    $usernameBefore = $_POST['username'.$selected.'before'];
-                    $usernameAfter = $_POST['username'.$selected];
-                    if($usernameBefore != $usernameAfter) {
-                        // changed username - check if the new username exists
-                        if(User::getUser($_POST['username'.$userId])) {
-                            $err = "Username is already exist.";
-                            return $err;
-                        }
-                    }
-                }
-
-                if($_POST['username'.$userId] != $_SESSION['user'] ) {
+            }
+        }
+            /*if($_SESSION['auth'] == 1) {
+                // Admin can change other users information
+                $selected = $_POST['form_select'];
+                $usernameBefore = $_POST['username'.$selected.'before'];
+                $usernameAfter = $_POST['username'.$selected];
+                if($usernameBefore != $usernameAfter) {
+                    // changed username - check if the new username exists
                     if(User::getUser($_POST['username'.$userId])) {
                         $err = "Username is already exist.";
                         return $err;
                     }
                 }
             }
-        }
+
+            if($_POST['username'.$userId] != $_SESSION['user'] ) {
+                if(User::getUser($_POST['username'.$userId])) {
+                    $err = "Username is already exist.";
+                    return $err;
+                }
+            }*/
         return $err;
     }
 
@@ -80,10 +91,12 @@ class User {
      * function to check if new user form was submitted ok
      * return errors if found any
      */
-    public static function testNew() {
+    public static function testNew()
+    {
         $err = '';
         if (empty($_POST['name']) || empty($_POST['username']) || empty($_POST['password'])
-            || empty($_POST['cpassword'])) {
+            || empty($_POST['cpassword'])
+        ) {
             $err = "Please fill in all the fields.";
             return $err;
         } else {
@@ -111,7 +124,8 @@ class User {
     /**
      * get user params from post
      */
-    public static function newUser($username, $pass, $name, $auth) {
+    public static function newUser($username, $pass, $name, $auth)
+    {
         $password = password_hash($pass, PASSWORD_BCRYPT);;
         return User::insertUser($username, $password, $name, $auth);
     }
@@ -119,7 +133,8 @@ class User {
     /**
      * update a new user to database
      */
-    public static function insertUser($username, $password, $name, $auth) {
+    public static function insertUser($username, $password, $name, $auth)
+    {
         $db = new Database();
         $q = "INSERT INTO `adss`.`users` (`username`, `password`, `name`, `auth`) VALUES
              ('{$username}','{$password}', '{$name}', '{$auth}');";
@@ -130,7 +145,8 @@ class User {
      * update user
      * @param - $user->user to update, $name
      */
-    public static function updateUser($user, $name) {
+    public static function updateUser($user, $name)
+    {
         $db = new Database();
         $q = "UPDATE users SET `name`='{$name}' WHERE username = '{$user}'";
         $db->createQuery($q);
@@ -142,7 +158,8 @@ class User {
      * @param array $user - a user name to search for
      * @return array $result - found user
      */
-    public static function getUser($user) {
+    public static function getUser($user)
+    {
         $db = new Database();
         $q = "SELECT * FROM users WHERE username='{$user}'";
         $result = $db->createQuery($q);
@@ -157,7 +174,8 @@ class User {
      * get all users in db
      * @return array $result - all users
      */
-    public static function getUsers() {
+    public static function getUsers()
+    {
         $db = new Database();
         $q = "SELECT * FROM users";
         $result = $db->createQuery($q);

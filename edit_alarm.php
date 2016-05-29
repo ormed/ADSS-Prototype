@@ -9,7 +9,6 @@ $err = '';
 $id_error ='';
 $name_error = '';
 
-// check if post back
 if (isset($_GET['id'])) {
     // Parse the $_GET['id'] so it disables injection
     $id =  filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
@@ -38,21 +37,29 @@ if (isset($_GET['id'])) {
 
     $constraints = $parts[1];
     $parts = explode("constraints:", $constraints);
-    debug($parts);
     $constraints = explode(".", $parts[1]);
-    debug($constraints);
-
 }
 
-if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_error)) {
+// check if post back
+if(($_SERVER["REQUEST_METHOD"] == "POST")) {
     // Split the constraints
     $constraints = Notification::getConstraints();
+
+    // Get the new ids
+    $ids = Notification::getIds();
 
     // Create the content string
     $content = $ids . " ".$constraints;
 
+    // Current datetime
+    // Set date to current hospital location
+    date_default_timezone_set('Asia/Tel_Aviv'); // Tel Aviv location
+    $currentTime = new DateTime();
+    // Get the date from DateTime object
+    $dateString = date_format($currentTime, 'Y-m-d H:i:s');
+
     // Insert the notification to database
-    Notification::insertNotification($content);
+    Notification::editNotification($content,  $dateString, $_POST['alert_name'], $_POST['notificationId']);
 
     header('Location: alarm.php');
 } else {
@@ -90,13 +97,24 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                 <div class="row">
                                     <form class="form-inline col-xs-10 col-xs-offset-1" role="form" method="POST" enctype="multipart/form-data" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
                                     <div class="col-lg-6">
+
+                                            <input class="form-control" name="notificationId" type="hidden" value="<?php echo $id;?>">
+
                                             <div class="form-group">
                                                 <label>Author: </label>
                                                 <input class="form-control" name="author" type="text" value="<?php echo $result[0]['author'];?>" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label>Date: </label>
-                                                <input class="form-control" name="current_date" type="text" value="<?php echo date("d/m/Y");?>" readonly>
+                                                <?php
+                                                // Prepare the date
+                                                // Set date to current hospital location
+                                                date_default_timezone_set('Asia/Tel_Aviv'); // Tel Aviv location
+                                                $currentTime = new DateTime();
+                                                // Get the date from DateTime object
+                                                $dateString = date_format($currentTime, 'd/m/Y H:i');
+                                                ?>
+                                                <input class="form-control" name="current_date" type="text" value="<?php echo $dateString;?>" readonly>
                                             </div>
 
                                             <p></p>
@@ -181,6 +199,8 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                                                 foreach($constraints as $constraint) {
                                                         if(!empty($constraint)) {
                                                             $constraint = str_replace("for-", " : ", $constraint);
+                                                            $constraint = str_replace(">", " > ", $constraint);
+                                                            $constraint = str_replace("<", " < ", $constraint);
                                                             echo "<div id='const_".$i."' class='form-group input-group col-xs-4 col-xs-offset-4'><input type='text' class='form-control text-center' id='input_".$i."' name='input_".$i."' value='".$constraint."' readonly><span class='input-group-btn'><button class='btn btn-danger' type='button' id='delete_".$i."' onclick='remove_constraint(".$i.");'><i class='fa fa-trash'></i></button></span></div><p></p>";
                                                             $i++;
                                                         }
@@ -220,7 +240,7 @@ if(($_SERVER["REQUEST_METHOD"] == "POST") && empty($id_error) && empty($name_err
                  * Add constraint to the preview
                  * If it has more than 5 constraints it does nothing
                  */
-                var i = <?php echo json_encode($i); ?>;;
+                var i = <?php echo json_encode(($i-1)); ?>;;
                 function add_constraint() {
                     if(i >= 5) {
                         window.alert("Maximum 5 constraints")

@@ -56,7 +56,15 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                 $results = User::getUsers();
                                 $html = "<option value='' disabled selected style='display:none;'>Select user</option>";
                                 foreach ($results as $key => $value) {
-                                    $html .= "<option name='$value[username]' value='$key'>$value[username]</option>";
+                                    if(isset($_POST['form_select'])) {
+                                        if ($_POST['form_select'] == $key) {
+                                            $html .= "<option name='$value[username]' value='$key' selected>$value[username]</option>";
+                                        } else {
+                                            $html .= "<option name='$value[username]' value='$key'>$value[username]</option>";
+                                        }
+                                    } else {
+                                        $html .= "<option name='$value[username]' value='$key'>$value[username]</option>";
+                                    }
                                 }
                                 echo "<select class='form-control' name='form_select' onchange='showDiv(this);'>$html</select>";
                                 ?>
@@ -67,26 +75,39 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                     ?>
                                     <div id="selection<?php echo $key ?>" style="display: none;">
                                         <div class="form-group">
-                                            <label>Username:</label>
-                                            <input class="form-control" name="username<?php echo $key; ?>" type="text"
-                                                   value="<?php echo $value["username"]; ?>">
-                                            <input name="username<?php echo $key; ?>before" type="hidden" value="<?php echo $value["username"]; ?>">
-                                        </div>
-                                        <div class="form-group">
                                             <label>Name:</label>
                                             <input class="form-control" name="name<?php echo $key; ?>" type="text"
                                                    value="<?php echo $value["name"]; ?>">
                                         </div>
                                         <div class="form-group">
+                                            <label>New password:</label>
+                                            <input class="form-control" name="newpass<?php echo $key; ?>"
+                                                   type="password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Confirm password:</label>
+                                            <input class="form-control" name="confirmpass<?php echo $key; ?>"
+                                                   type="password">
+                                        </div>
+                                        <div class="form-group">
                                             <label>Authorization:</label>
                                             <select class="form-control" name="auth<?php echo $key ?>">
-                                                <option value="1" <?php if($value["auth"]==1) echo "selected"; ?>>Admin</option>
-                                                <option value="2" <?php if($value["auth"]==2) echo "selected"; ?>>Dr.</option>
-                                                <option value="3" <?php if($value["auth"]==3) echo "selected"; ?>>Nurse</option>
-                                                <option value="4" <?php if($value["auth"]==4) echo "selected"; ?>>Research</option>
+                                                <option value="1" <?php if ($value["auth"] == 1) echo "selected"; ?>>
+                                                    Admin
+                                                </option>
+                                                <option value="2" <?php if ($value["auth"] == 2) echo "selected"; ?>>
+                                                    Dr.
+                                                </option>
+                                                <option value="3" <?php if ($value["auth"] == 3) echo "selected"; ?>>
+                                                    Nurse
+                                                </option>
+                                                <option value="4" <?php if ($value["auth"] == 4) echo "selected"; ?>>
+                                                    Research
+                                                </option>
                                             </select>
                                         </div>
-                                        <input type=submit class="btn btn-default" value='Save' name="submit<?php echo $key; ?>">
+                                        <input type=submit class="btn btn-default" value='Save'
+                                               name="submit<?php echo $key; ?>">
                                     </div>
                                     <?php
                                 }
@@ -105,16 +126,17 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
 </div>
 <!-- /#wrapper -->
 
+
 <script type="text/javascript">
     function showDiv(elem) {
         var all_elem = getElementsStartsWithId('selection');
-        for(var i = 0, length=all_elem.length; i<length; i++) {
+        for (var i = 0, length = all_elem.length; i < length; i++) {
             document.getElementById('selection' + i).style.display = "none";
         }
         document.getElementById('selection' + elem.value).style.display = "block";
     }
 
-    function getElementsStartsWithId( id ) {
+    function getElementsStartsWithId(id) {
         var children = document.body.getElementsByTagName('*');
         var elements = [], child;
         for (var i = 0, length = children.length; i < length; i++) {
@@ -125,6 +147,14 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
         return elements;
     }
 </script>
+<?php
+/*if (isset($_POST['form_select'])) {
+    echo "<script>";
+    echo "showDiv(".$_POST['form_select'].")";
+    echo "</script>";
+}*/
+?>
+
 <?php
 include_once 'parts/bottom.php';
 include_once 'parts/footer.php';

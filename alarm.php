@@ -16,6 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 //else {
 
+//$results = Notification::getNotifications();
+
+// Delete old notifications
+//Notification::deleteOldNotifications();
+
 $results = Notification::getNotifications();
 
 ?>
@@ -130,8 +135,8 @@ $results = Notification::getNotifications();
                                                     foreach($constraints as $constraint) {
                                                         if(!empty($constraint)) {
                                                             $constraint = str_replace("for-", " : ", $constraint);
-                                                            echo "<div class='form-group input-group col-xs-3'>
-                                                                    <input type='text' class='form-control  text-center' value='".$constraint."' readonly>
+                                                            echo "<div class='form-group input-group col-xs-3 col-md-3 col-lg-3'>
+                                                                    <input type='text' class='form-control' size='50' value='".$constraint."' readonly>
                                                                   </div>";
                                                         }
                                                     }

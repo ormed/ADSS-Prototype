@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //$results = Notification::getNotifications();
 
 // Delete old notifications
-//Notification::deleteOldNotifications();
+Notification::deleteOldNotifications();
 
 $results = Notification::getNotifications();
 

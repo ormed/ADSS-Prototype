@@ -24,8 +24,6 @@ $results = Patient::getBedPatients();
             <?php
 
             foreach ($results as $key => $value) {
-
-                debug($value);
             if ($key % 2 == 0) {
 
             ?>

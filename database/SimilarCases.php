@@ -34,6 +34,24 @@ class SimilarCases
         return $current_max;
     }
 
+    public static function KNN_Algorithm_DB($id, $numOfNeighbors) {
+        /*// Read the csv file that contains patients parameters
+        $data = array();
+        $file = fopen($filename, 'r');
+        while (($line = fgetcsv($file)) !== FALSE) {
+            $data[$line[0]] = $line;
+        }
+        fclose($file);
+        unset($data[0]); // Remove params header (i.e: age,id,bp...)
+
+        // Build distance matrix
+        $distances = array();
+        $distances[$id] = SimilarCases::euclideanDistance($data[$id], $id, $data);
+        // Example, target = id 1, getting 10 nearest neighbors
+        $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $numOfNeighbors);
+        return $neighbors;*/
+    }
+
     public static function KNN_Algorithm($filename, $id, $num_of_neighbors) {
         // Read the csv file that contains patients parameters
         $data = array();
@@ -43,6 +61,8 @@ class SimilarCases
         }
         fclose($file);
         unset($data[0]); // Remove params header (i.e: age,id,bp...)
+
+        debug($data);
 
         // Build distance matrix
         $distances = array();

@@ -36,4 +36,18 @@ class Patient {
         $result = $db->createQuery($q);
         return $result;
     }
+
+    public static function getPatientById($id) {
+        $db = new Database();
+        $q = 'SELECT `id`, `length of stay` as los, age, gender FROM patients WHERE `id`='.$id;
+        $result = $db->createQuery($q);
+        return $result;
+    }
+
+    public static function getPatientParams($id) {
+        $db = new Database();
+        $q = 'SELECT  FROM patients WHERE `id`='.$id;
+        $result = $db->createQuery($q);
+        return $result;
+    }
 }

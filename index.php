@@ -5,6 +5,8 @@ include_once 'database/Patient.php';
 
 $results = Patient::getBedPatients();
 
+// 3320, 3321, 3322, 3350
+
 ?>
 
 <body>
@@ -49,7 +51,7 @@ $results = Patient::getBedPatients();
                                         <!-- Patient info -->
                                         <div class="alert alert-info">
                                         <span style="font-family: monospace; font-size: large; color: darkblue;">
-                                            <b>Age:</b> <?php if($value['age']=='NULL') { echo ""; } else { echo $value['age']; } ?>
+                                            <b>Age:</b> <?php echo $value['age']; ?>
                                             </br>
                                             <b>LOS:</b> <?php echo $value['los']; ?>
                                             </br>

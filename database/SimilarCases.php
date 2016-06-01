@@ -34,22 +34,86 @@ class SimilarCases
         return $current_max;
     }
 
-    public static function KNN_Algorithm_DB($id, $numOfNeighbors) {
-        /*// Read the csv file that contains patients parameters
-        $data = array();
-        $file = fopen($filename, 'r');
-        while (($line = fgetcsv($file)) !== FALSE) {
-            $data[$line[0]] = $line;
-        }
-        fclose($file);
-        unset($data[0]); // Remove params header (i.e: age,id,bp...)
+    public static function KNN_Algorithm_All_Parameters($id, $numOfNeighbors) {
+        // Read the csv file that contains patients parameters
+        $data = SimilarCases::getAllParams();
 
         // Build distance matrix
         $distances = array();
         $distances[$id] = SimilarCases::euclideanDistance($data[$id], $id, $data);
         // Example, target = id 1, getting 10 nearest neighbors
         $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $numOfNeighbors);
-        return $neighbors;*/
+        return $neighbors;
+    }
+
+    public static function KNN_Algorithm_Selected_Parameters($id, $numOfNeighbors) {
+        // Read the csv file that contains patients parameters
+        $data = SimilarCases::getPostParams();
+
+        // Build distance matrix
+        $distances = array();
+        $distances[$id] = SimilarCases::euclideanDistance($data[$id], $id, $data);
+        // Example, target = id 1, getting 10 nearest neighbors
+        $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $numOfNeighbors);
+        return $neighbors;
+    }
+
+    public static function getAllParams() {
+        $db = new Database();
+        $q = "SELECT * FROM `adss`.`normalized_cases` order by `id` ASC";
+        $results = $db->createQuery($q);
+        $result = array();
+        foreach($results as $key=>$value) {
+            $result[$value['id']] = array(0=>$value['id'],
+                1=>$value['Min Creatinine'], 2=>$value['Max Creatinine'],
+                3=>$value['Mean Creatinine'], 4=>$value['Median Creatinine'],
+                5=>$value['Min Bilirubin'], 6=>$value['Max Bilirubin'],
+                7=>$value['Mean Bilirubin'], 8=>$value['Median Bilirubin'],
+                9=>$value['Min Platelets'], 10=>$value['Mean Platelets'],
+                11=>$value['Max Platelets'], 12=>$value['Median Platelets'],
+                13=>$value['Min Blood Urea Nitrogen'], 14=>$value['Max Blood Urea Nitrogen'],
+                15=>$value['Mean Blood Urea Nitrogen'], 16=>$value['Median Blood Urea Nitrogen'],
+                17=>$value['Min Anion Gap'], 18=>$value['Max Anion Gap'],
+                19=>$value['Mean Anion Gap'], 20=>$value['Median Anion Gap'],
+                21=>$value['Min Heart Rate'], 22=>$value['Max Heart Rate'],
+                23=>$value['Mean Heart Rate'], 24=>$value['Median Heart Rate'],
+                25=>$value['Min Mean Arterial Pressure'], 26=>$value['Max Mean Arterial Pressure'],
+                27=>$value['Mean Mean Arterial Pressure'], 28=>$value['Median Mean Arterial Pressure'],
+                29=>$value['Min Respiratory Rate'], 30=>$value['Max Respiratory Rate'],
+                31=>$value['Mean Respiratory Rate'], 32=>$value['Median Respiratory Rate'],
+                33=>$value['Min Temperature'], 34=>$value['Max Temperature'],
+                35=>$value['Mean Temperature'], 36=>$value['Median Temperature']
+            );
+        }
+        return $result;
+    }
+
+    public static function getPostParams() {
+        $db = new Database();
+        $q = "SELECT * FROM `adss`.`normalized_cases` order by `id` ASC";
+        $results = $db->createQuery($q);
+        $i = 1;
+        $result = array();
+        foreach($results as $key=>$value) {
+            $result[$value['id']] = array(0=>$value['id']);
+            while(isset($_POST['param_'.$i])) {
+                $result[$value['id']][$i] = $value[$_POST['param_' . $i]];
+                $i++;
+            }
+            $i = 1;
+            /* All Parameters
+                1=>$value['Min Creatinine'], 2=>$value['Max Creatinine'],
+                3=>$value['Mean Creatinine'], 4=>$value['Median Creatinine'],
+                5=>$value['Min Bilirubin'], 6=>$value['Max Bilirubin'],
+                7=>$value['Mean Bilirubin'], 8=>$value['Median Bilirubin'],
+                9=>$value['Min Platelets'], 10=>$value['Mean Platelets'],
+                11=>$value['Max Platelets'], 12=>$value['Median Platelets'],
+                13=>$value['Min Blood Urea Nitrogen'], 14=>$value['Max Blood Urea Nitrogen'],
+                15=>$value['Mean Blood Urea Nitrogen'], 16=>$value['Median Blood Urea Nitrogen'],
+                17=>$value['Min Anion Gap'], 18=>$value['Max Anion Gap'],
+                19=>$value['Mean Anion Gap'], 20=>$value['Median Anion Gap']);*/
+        }
+        return $result;
     }
 
     public static function KNN_Algorithm($filename, $id, $num_of_neighbors) {
@@ -61,8 +125,6 @@ class SimilarCases
         }
         fclose($file);
         unset($data[0]); // Remove params header (i.e: age,id,bp...)
-
-        debug($data);
 
         // Build distance matrix
         $distances = array();

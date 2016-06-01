@@ -24,8 +24,10 @@ $value = Patient::getPatientById($id);
 
 <script>
     google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
-    google.charts.setOnLoadCallback(drawBicarbonate);
-    google.charts.setOnLoadCallback(drawAnionGap);
+    google.charts.setOnLoadCallback(drawHeartRate);
+    google.charts.setOnLoadCallback(drawRespiratoryRate);
+    google.charts.setOnLoadCallback(drawTemp);
+    google.charts.setOnLoadCallback(drawMAP);
     google.charts.setOnLoadCallback(drawProbability);
 
 
@@ -73,18 +75,18 @@ $value = Patient::getPatientById($id);
     }
 
 
-    function drawBicarbonate() {
+    function drawHeartRate() {
         var patientId = getParameterByName('id');
-        var jsonBicarbonate = $.ajax({
-            url: "get_bicarbonate.php",
+        var jsonHeartRate = $.ajax({
+            url: "get_heart_rate.php",
             dataType: "json",
             data: {patientId: patientId},
             async: false
         }).responseText;
-        var array = JSON.parse(jsonBicarbonate);
+        var array = JSON.parse(jsonHeartRate);
         var data = new google.visualization.DataTable();
         data.addColumn('datetime', 'X');
-        data.addColumn('number', 'Bicarbonate (mmol/L)');
+        data.addColumn('number', 'Heart Rate (bpm)');
         var size = array.rows.length;
         for (var i = 0; i < size; i++) {
             var myValue = array.rows[i].c[0].v;
@@ -92,8 +94,6 @@ $value = Patient::getPatientById($id);
             data.addRow([new Date(array.rows[i].c[1].v), myValue]);
         }
         var options = {
-            curveType: 'function',
-            pointSize: 5,
             legend: {
                 position:'top'
             },
@@ -101,54 +101,124 @@ $value = Patient::getPatientById($id);
                 title: 'Time'
             },
             vAxis: {
-                title: 'Bicarbonate',
+                title: 'Heart Rate',
+            },
+            chartArea: {width: "70%", height: "60%"},
+            colors: ['red']
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('hr_chart'));
+        chart.draw(data, options);
+    }
+
+    function drawRespiratoryRate() {
+        var patientId = getParameterByName('id');
+        var jsonRespiratoryRate = $.ajax({
+            url: "get_respiratory_rate.php",
+            dataType: "json",
+            data: {patientId: patientId},
+            async: false
+        }).responseText;
+        var array = JSON.parse(jsonRespiratoryRate);
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'X');
+        data.addColumn('number', 'Respiratory Rate (insp/min)');
+        var size = array.rows.length;
+        for (var i = 0; i < size; i++) {
+            var myValue = array.rows[i].c[0].v;
+            myValue = Math.round(myValue * 100) / 100;
+            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
+        }
+        var options = {
+            legend: {
+                position:'top'
+            },
+            hAxis: {
+                title: 'Time'
+            },
+            vAxis: {
+                title: 'Respiratory Rate'
+            },
+            chartArea: {width: "70%", height: "60%"}
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('respiratory_rate_chart'));
+        chart.draw(data, options);
+    }
+
+    function drawTemp() {
+        var patientId = getParameterByName('id');
+        var jsonTemperature = $.ajax({
+            url: "get_temperature.php",
+            dataType: "json",
+            data: {patientId: patientId},
+            async: false
+        }).responseText;
+        var array = JSON.parse(jsonTemperature);
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'X');
+        data.addColumn('number', 'Temperature (\u00B0C)');
+        var size = array.rows.length;
+        for (var i = 0; i < size; i++) {
+            var myValue = array.rows[i].c[0].v;
+            myValue = Math.round(myValue * 100) / 100;
+            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
+        }
+        var options = {
+            legend: {
+                position:'top'
+            },
+            hAxis: {
+                title: 'Time'
+            },
+            vAxis: {
+                title: 'Temperature'
+            },
+            chartArea: {width: "70%", height: "60%"},
+            colors: ['orange']
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('temperature_chart'));
+        chart.draw(data, options);
+    }
+
+    function drawMAP() {
+        var patientId = getParameterByName('id');
+        var $jsonMeanArterialPressure = $.ajax({
+            url: "get_map.php",
+            dataType: "json",
+            data: {patientId: patientId},
+            async: false
+        }).responseText;
+        var array = JSON.parse($jsonMeanArterialPressure);
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'X');
+        data.addColumn('number', 'Mean Arterial Pressure (mmHg)');
+        var size = array.rows.length;
+        for (var i = 0; i < size; i++) {
+            var myValue = array.rows[i].c[0].v;
+            myValue = Math.round(myValue * 100) / 100;
+            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
+        }
+        var options = {
+            legend: {
+                position:'top'
+            },
+            hAxis: {
+                title: 'Time'
+            },
+            vAxis: {
+                title: 'Mean '
             },
             chartArea: {width: "70%", height: "60%"},
             colors: ['green']
         };
-        var chart = new google.visualization.LineChart(document.getElementById('bicarbonate_chart'));
-        chart.draw(data, options);
-    }
-
-    function drawAnionGap() {
-        var patientId = getParameterByName('id');
-        var jsonAnionGap = $.ajax({
-            url: "get_anion_gap.php",
-            dataType: "json",
-            data: {patientId: patientId},
-            async: false
-        }).responseText;
-        var array = JSON.parse(jsonAnionGap);
-        var data = new google.visualization.DataTable();
-        data.addColumn('datetime', 'X');
-        data.addColumn('number', 'Anion Gap (meq/l)');
-        var size = array.rows.length;
-        for (var i = 0; i < size; i++) {
-            var myValue = array.rows[i].c[0].v;
-            myValue = Math.round(myValue * 100) / 100;
-            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
-        }
-        var options = {
-            legend: {
-                position:'top'
-            },
-            curveType: 'function',
-            pointSize: 5,
-            hAxis: {
-                title: 'Time'
-            },
-            vAxis: {
-                title: 'Anion Gap'
-            },
-            chartArea: {width: "70%", height: "60%"}
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('anion_gap_chart'));
+        var chart = new google.visualization.LineChart(document.getElementById('map_chart'));
         chart.draw(data, options);
     }
 
     function drawAll() {
-        drawBicarbonate();
-        drawAnionGap();
+        drawHeartRate();
+        drawRespiratoryRate();
+        drawTemp();
+        drawMAP();
         drawProbability();
     }
 </script>
@@ -215,14 +285,14 @@ $value = Patient::getPatientById($id);
             </div>
             <!-- /.row -->
 
-            <div id="bicarbonate_plot" style="width: 70%;">
+            <div id="hr_plot" style="width: 70%;">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Bicarbonate
+                        Heart Rate
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div class="flot-chart-content" id="bicarbonate_chart"
+                        <div class="flot-chart-content" id="hr_chart"
                              style="padding: 0px; position: relative;"></div>
                     </div>
                     <!-- /.panel-body -->
@@ -230,35 +300,47 @@ $value = Patient::getPatientById($id);
                 <!-- /.panel -->
             </div>
 
-            <div id="ag_plot" style="width: 70%;">
+            <div id="rr_plot" style="width: 70%;">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Anion Gap
+                        Respiratory Rate
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div id="anion_gap_chart"></div>
+                        <div id="respiratory_rate_chart"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
                 <!-- /.panel -->
             </div>
 
-            <!-- Add More Plots:
-            <div id="hr_plot" style="width: 70%;">
+            <div id="temp_plot" style="width: 70%;">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Heart Rate
+                        Temperature
                     </div>
-                    <!-- /.panel-heading
+                    <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div class="flot-chart-content" id="chart_div" style="padding: 0px; position: relative;">
-                        </div>
+                        <div id="temperature_chart"></div>
                     </div>
-                    <!-- /.panel-body
+                    <!-- /.panel-body -->
                 </div>
-                <!-- /.panel
-            </div>-->
+                <!-- /.panel -->
+            </div>
+
+            <div id="map_plot" style="width: 70%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Arterial Pressure Mean
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div id="map_chart"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
 
         </div>
         <!-- /.container-fluid -->

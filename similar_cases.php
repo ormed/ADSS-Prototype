@@ -11,14 +11,17 @@ if (isset($_GET['id'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-
-    debug($_POST);
-
     $id = $_POST['patient_id'];
     $numOfNeighbors = $_POST['numOfNeighborsLbl'];
-    //$neighbors = SimilarCases::KNN_Algorithm_DB($id, $numOfNeighbors);
-    $neighbors = SimilarCases::KNN_Algorithm('C:/wamp/www/ADSS-Prototype/uploads/Patients.csv', $id, $numOfNeighbors);
+    if ($_POST['submit'] == 'searchParams') {
+        $neighbors = SimilarCases::KNN_Algorithm_Selected_Parameters($id, $numOfNeighbors);
+    } else {
+        $neighbors = SimilarCases::KNN_Algorithm_All_Parameters($id, $numOfNeighbors);
+    }
 
+    //$neighbors = SimilarCases::KNN_Algorithm_DB($id, $numOfNeighbors);
+    //$neighbors = SimilarCases::KNN_Algorithm('C:/wamp/www/ADSS-Prototype/uploads/Patients.csv', $id, $numOfNeighbors);
+    //SimilarCases::getAllParams();
     /*
     // Read the csv file that contains patients parameters
     $data = array();
@@ -106,13 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                        data-slider-id='numOfNeighborsSlider' type="text"
                                                        data-slider-min="0" data-slider-max="50" data-slider-step="1"
                                                        data-slider-value="0"/>
-                                                <!--                                                <select class="form-control" name="num_of_neighbors">-->
-                                                <!--                                                    --><?php
-                                                //                                                    for ($i = 0; $i <= 50; $i ++) {
-                                                //                                                        echo "<option value='$i'>$i</option>";
-                                                //                                                    }
-                                                //                                                    ?>
-                                                <!--                                                </select>-->
+
                                             </div>
                                             <p></p>
                                         </div>
@@ -170,9 +167,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <legend></legend>
 
 
-                                        <button type="submit" class="btn btn-success" id="searchParams" style="display: none;">Search By Parameters</button>
+                                        <button type="submit" class="btn btn-success" id="searchParams" name="submit"
+                                                value="searchParams" style="display: none;">Search By Parameters
+                                        </button>
                                         <p></p>
-                                        <button type="submit" class="btn btn-info" id="searchAll">Search All</button>
+                                        <button type="submit" class="btn btn-info" id="searchAll" name="submit"
+                                                value="searchAll">Search All
+                                        </button>
 
                                 </div>
 
@@ -220,9 +221,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <thead>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
+                                                    <?php
+                                                    if ($_POST['submit'] == 'searchParams') {
+                                                        // Only selected parameters
+                                                        $i = 1;
+                                                        while (isset($_POST['param_' . $i])) {
+                                                            ?>
+                                                            <th><?php echo $_POST['param_' . $i]; ?></th>
+                                                            <?php
+                                                            $i++;
+                                                        }
+                                                    } else {
+                                                        // All parameters
+                                                        $paramsCols = Patient::getAllParameters();
+                                                        foreach ($paramsCols as $value) {
+                                                            if ($value['Field'] != "id") {
+                                                                ?>
+                                                                <th><?php echo $value['Field']; ?></th>
+                                                                <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
                                                     <th>Percentage (%)</th>
                                                 </tr>
                                                 </thead>
@@ -230,15 +250,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <tbody>
                                                 <?php
                                                 if (isset($neighbors)) {
-                                                    foreach ($neighbors as $key => $value) {
-                                                        $params = Patient::getPatientParams($key);
+
+                                                    //*****************************************************//
+                                                    //             Data about the patient we check         //
+                                                    //*****************************************************//
+                                                    ?>
+                                                    <tr>
+                                                        <td style="color: firebrick;"><b><?php echo $id; ?></b></td>
+                                                        <?php
+                                                        if ($_POST['submit'] == 'searchParams') {
+                                                            // Only selected parameters
+                                                            $patientParams = Patient::getPatientResultsById($id);
+
+                                                        } else {
+                                                            // All parameters
+                                                            $patientParams = Patient::getAllPatientResultsById($id);
+                                                        }
+                                                        foreach ($patientParams[0] as $param_result) {
+                                                            ?>
+                                                            <td style="color: firebrick;"><b><?php echo $param_result; ?></b></td>
+                                                            <?php
+                                                        }
                                                         ?>
-                                                        <tr id="result.entry[]">
+                                                        <td></td>
+                                                    </tr>
+
+                                                    <?php
+                                                    //*****************************************************//
+                                                    //             Data about the neighbors                //
+                                                    //*****************************************************//
+                                                    foreach ($neighbors as $key => $value) {
+                                                        ?>
+                                                        <tr>
                                                             <td><?php echo $key; ?></td>
-                                                            <td><?php //echo $value;?></td>
-                                                            <td><?php //echo $value;?></td>
-                                                            <td><?php //echo $value;?></td>
-                                                            <td><?php echo round((1 / (1 + $value)) * 1000, 4) . "%"; ?></td>
+                                                            <?php
+                                                            if ($_POST['submit'] == 'searchParams') {
+                                                                // Only selected parameters
+                                                                $patientParams = Patient::getPatientResultsById($key);
+                                                            } else {
+                                                                // All parameters
+                                                                $patientParams = Patient::getAllPatientResultsById($key);
+                                                            }
+                                                            foreach ($patientParams[0] as $param_result) {
+                                                                ?>
+                                                                <td><?php echo $param_result; ?></td>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            <td><?php echo round((1 / (1 + $value)) * 100, 4) . "%"; ?></td>
                                                         </tr>
                                                         <?php
                                                     }
@@ -291,7 +350,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
 
                         // Show search btn
-                        if(i == 1) {
+                        if (i == 1) {
                             document.getElementById("searchParams").style.display = 'block';
                         }
 
@@ -325,7 +384,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // Add hidden input in order to POST it later
                         var params = document.getElementById('params');
                         var text = document.createElement('div');
-                        text.innerHTML = "<input type='hidden' id='param_"+i+"' name='param_"+i+"' value='"+constraint+" "+option+"'/>";
+                        text.innerHTML = "<input type='hidden' id='param_" + i + "' name='param_" + i + "' value='" + option + " " + constraint + "'/>";
                         params.appendChild(text);
 
                         i++;
@@ -397,10 +456,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             document.getElementById("preview_table").rows[j - 1].cells.item(0).innerHTML = "" + (j - 1);
                         }
 
-                         // Don't show search btn
-                         if(i == 0) {
+                        // Don't show search btn
+                        if (i == 0) {
                             document.getElementById("searchParams").style.display = "none";
-                         }
+                        }
 
 
                         i--;

@@ -5,37 +5,37 @@ include_once 'Database.php';
 class Sepsis {
 
     /**
-     * get the bicarbonate results by id
+     * get the heart rate results by id
      * @param $id - the patient id
-     * @return array of all the bicarbonate results
+     * @return array of all the heart rate results
      */
-    public static function getBicarbonateById($id) {
+    public static function getHeartRateById($id) {
         $db = new Database();
-        $q = "SELECT `value` as `Bicarbonate`, `time` as Time FROM `bicarbonate_results` WHERE `patient_id`=".$id." ORDER BY `time` ASC";
+        $q = "SELECT `Value` as `Heart Rate`, `Date.Time` as Time FROM `heart_rate` WHERE `rand.id`=".$id." ORDER BY `Date.Time` ASC";
         $result = $db->createQuery($q);
         return $result;
     }
 
     /**
-     * get the bun results by id
+     * get the respiratory rate results by id
      * @param $id - the patient id
-     * @return array of all the bun results
+     * @return array of all the respiratory rate results
      */
-    public static function getBunById($id) {
+    public static function getRespiratoryRateById($id) {
         $db = new Database();
-        $q = "SELECT `value` as `Bun`, `time` as Time FROM `bun_results` WHERE `patient_id`=".$id." ORDER BY `time` ASC";
+        $q = "SELECT `Value` as `Respiratory Rate`, `Date.Time` as Time FROM `respiratory_rate` WHERE `rand.id`=".$id." ORDER BY `Date.Time` ASC";
         $result = $db->createQuery($q);
         return $result;
     }
 
     /**
-     * get the anion gap results by id
+     * get the temperature results by id
      * @param $id - the patient id
-     * @return array of all the anion gap results
+     * @return array of all the temperature results
      */
-    public static function getAnionGapById($id) {
+    public static function getTemperatureById($id) {
         $db = new Database();
-        $q = "SELECT `value` as `Anion Gap`, `time` as Time FROM `anion_gap_results` WHERE `patient_id`=".$id." ORDER BY `time` ASC";
+        $q = "SELECT `Value` as `Temperature`, `Date.Time` as Time FROM `tmp_results` WHERE `rand.id`=".$id." ORDER BY `Date.Time` ASC";
         $result = $db->createQuery($q);
         return $result;
     }
@@ -45,9 +45,9 @@ class Sepsis {
      * @param $id - the patient id
      * @return array of all the creatinine results
      */
-    public static function getCreatinineById($id) {
+    public static function getMeanArterialPressureById($id) {
         $db = new Database();
-        $q = "SELECT `value` as `Creatinine`, `time` as Time FROM `creatinine_results` WHERE `patient_id`=".$id." ORDER BY `time` ASC";
+        $q = "SELECT `Value` as `Mean Arterial Pressure`, `Date.Time` as Time FROM `map_results` WHERE `rand.id`=".$id." ORDER BY `Date.Time` ASC";
         $result = $db->createQuery($q);
         return $result;
     }

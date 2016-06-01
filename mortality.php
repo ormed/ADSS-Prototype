@@ -1,7 +1,7 @@
 <?php
 include_once 'connection/checkUser.php';
 include_once 'parts/header.php';
-include_once 'database/Sepsis.php';
+include_once 'database/Mortality.php';
 include_once 'database/Patient.php';
 
 if (isset($_GET['id'])) {
@@ -11,9 +11,12 @@ if (isset($_GET['id'])) {
     header('Location: index.php');
 }
 
-$sepsis_prob = Sepsis::getProbability($id);
-if (!empty($sepsis_prob)) {
-    $sepsis_prob = number_format($sepsis_prob * 100, 3, '.', '');
+$result = Mortality::getProbability($id);
+debug($result);
+if (!empty($result)) {
+    $mortality_prob = number_format($result[0]['preds'] * 100, 3, '.', '');
+} else {
+    $mortality_prob = '';
 }
 
 $value = Patient::getPatientById($id);
@@ -24,8 +27,6 @@ $value = Patient::getPatientById($id);
 
 <script>
     google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
-    google.charts.setOnLoadCallback(drawBicarbonate);
-    google.charts.setOnLoadCallback(drawAnionGap);
     google.charts.setOnLoadCallback(drawProbability);
 
 
@@ -66,89 +67,13 @@ $value = Patient::getPatientById($id);
         setTimeout(function () {
             var data = google.visualization.arrayToDataTable([
                 ['Label', 'Value'],
-                ['', <?=$sepsis_prob ?>]
+                ['', <?=$mortality_prob ?>]
             ]);
             chart.draw(data, options);
         }, 200);
     }
 
-
-    function drawBicarbonate() {
-        var patientId = getParameterByName('id');
-        var jsonBicarbonate = $.ajax({
-            url: "get_bicarbonate.php",
-            dataType: "json",
-            data: {patientId: patientId},
-            async: false
-        }).responseText;
-        var array = JSON.parse(jsonBicarbonate);
-        var data = new google.visualization.DataTable();
-        data.addColumn('datetime', 'X');
-        data.addColumn('number', 'Bicarbonate (mmol/L)');
-        var size = array.rows.length;
-        for (var i = 0; i < size; i++) {
-            var myValue = array.rows[i].c[0].v;
-            myValue = Math.round(myValue * 100) / 100;
-            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
-        }
-        var options = {
-            curveType: 'function',
-            pointSize: 5,
-            legend: {
-                position:'top'
-            },
-            hAxis: {
-                title: 'Time'
-            },
-            vAxis: {
-                title: 'Bicarbonate',
-            },
-            chartArea: {width: "70%", height: "60%"},
-            colors: ['green']
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('bicarbonate_chart'));
-        chart.draw(data, options);
-    }
-
-    function drawAnionGap() {
-        var patientId = getParameterByName('id');
-        var jsonAnionGap = $.ajax({
-            url: "get_anion_gap.php",
-            dataType: "json",
-            data: {patientId: patientId},
-            async: false
-        }).responseText;
-        var array = JSON.parse(jsonAnionGap);
-        var data = new google.visualization.DataTable();
-        data.addColumn('datetime', 'X');
-        data.addColumn('number', 'Anion Gap (meq/l)');
-        var size = array.rows.length;
-        for (var i = 0; i < size; i++) {
-            var myValue = array.rows[i].c[0].v;
-            myValue = Math.round(myValue * 100) / 100;
-            data.addRow([new Date(array.rows[i].c[1].v), myValue]);
-        }
-        var options = {
-            legend: {
-                position:'top'
-            },
-            curveType: 'function',
-            pointSize: 5,
-            hAxis: {
-                title: 'Time'
-            },
-            vAxis: {
-                title: 'Anion Gap'
-            },
-            chartArea: {width: "70%", height: "60%"}
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('anion_gap_chart'));
-        chart.draw(data, options);
-    }
-
     function drawAll() {
-        drawBicarbonate();
-        drawAnionGap();
         drawProbability();
     }
 </script>
@@ -164,7 +89,7 @@ $value = Patient::getPatientById($id);
 
             <div class="row center-block">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Sepsis</h1>
+                    <h1 class="page-header">Mortality</h1>
                 </div>
                 <!-- /.col-lg-12 -->
 
@@ -176,7 +101,7 @@ $value = Patient::getPatientById($id);
 
 
                 <div class="text-left" id="patient_info" style="width: 20%; height: 50%; float: left;">
-                    <div class="panel panel-default">
+                    <div class="panel panel-primary">
                         <div class="panel-heading">
                             Patient Information
                         </div>
@@ -197,8 +122,9 @@ $value = Patient::getPatientById($id);
                     <!-- /.panel -->
                 </div>
 
-                <div class="text-center" id="sepsis_result" style="width: 20%; height: 50%; float: left; margin-left:20px;">
-                    <div class="panel panel-<?php echo($sepsis_prob > 50 ? "danger" : "success"); ?>">
+                <div class="text-center" id="sepsis_result"
+                     style="width: 20%; height: 50%; float: left; margin-left:20px;">
+                    <div class="panel panel-<?php echo($mortality_prob > 50 ? "danger" : "success"); ?>">
                         <div class="panel-heading">
                             Probability
                         </div>
@@ -215,55 +141,138 @@ $value = Patient::getPatientById($id);
             </div>
             <!-- /.row -->
 
-            <div id="bicarbonate_plot" style="width: 70%;">
-                <div class="panel panel-default">
+            <div id="sofa" style="width: 70%;">
+                <div class="panel panel-info">
                     <div class="panel-heading">
-                        Bicarbonate
+                        SOFA
                     </div>
                     <!-- /.panel-heading -->
-                    <div class="panel-body">
-                        <div class="flot-chart-content" id="bicarbonate_chart"
-                             style="padding: 0px; position: relative;"></div>
+                    <div class="row text-center">
+
+                        <div class="row show-grid panel-body">
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) {
+                                        echo $result[0]['sofa1'];
+                                    } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) {
+                                        echo $result[0]['sofa2'];
+                                    } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) {
+                                        echo $result[0]['sofa3'];
+                                    } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
                     <!-- /.panel-body -->
                 </div>
                 <!-- /.panel -->
             </div>
 
-            <div id="ag_plot" style="width: 70%;">
-                <div class="panel panel-default">
+            <div id="gastro" style="width: 70%;">
+                <div class="panel panel-info">
                     <div class="panel-heading">
-                        Anion Gap
+                        Gastro (Vomit, Guts, REE)
                     </div>
-                    <!-- /.panel-heading -->
-                    <div class="panel-body">
-                        <div id="anion_gap_chart"></div>
-                    </div>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.panel -->
-            </div>
 
-            <!-- Add More Plots:
-            <div id="hr_plot" style="width: 70%;">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Heart Rate
-                    </div>
-                    <!-- /.panel-heading
-                    <div class="panel-body">
-                        <div class="flot-chart-content" id="chart_div" style="padding: 0px; position: relative;">
+                    <div class="row text-center">
+
+                        <div class="row show-grid panel-body">
+
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) { ?>
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['vomit1'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                        ,
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['guts1'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                        ,
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['REE1'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                    <?php } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) {
+                                        ?>
+                                        <?php echo $result[0]['vomit2']; ?>
+                                        ,
+                                        <?php echo $result[0]['guts2']; ?>
+                                        ,
+                                        <?php echo $result[0]['REE2'];
+                                    } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+                            <div class="col-md-4 col-md-offset-1" style="width: 20%;">
+                                <span style="font-family: monospace; font-size: large; color: darkblue;">
+                                    <?php if (!empty($result)) { ?>
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['vomit3'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                        ,
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['guts3'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                        ,
+                                        <?php if (!empty($result)) {
+                                            echo $result[0]['REE3'];
+                                        } else {
+                                            echo "Not Diagnosed";
+                                        } ?>
+                                    <?php } else {
+                                        echo "Not Diagnosed";
+                                    } ?>
+                                </span>
+                            </div>
+
                         </div>
                     </div>
-                    <!-- /.panel-body
-                </div>
-                <!-- /.panel
-            </div>-->
 
+                </div>
+
+            </div>
+            <!-- /.panel -->
         </div>
-        <!-- /.container-fluid -->
+
     </div>
-    <!-- /#page-wrapper -->
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->
 
 </div>
 <!-- /#wrapper -->

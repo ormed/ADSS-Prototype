@@ -143,7 +143,7 @@ class User
 
     /**
      * update user
-     * @param - $user->user to update, $name
+     * @param - $user->user to update, $name->name to update
      */
     public static function updateUser($user, $name)
     {

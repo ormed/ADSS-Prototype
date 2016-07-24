@@ -122,18 +122,6 @@ class FixDB {
         return $result[0]["cnt"];
     }
 
-
-    /**
-     * get user params from post
-     */
-    public static function get() {
-        $username = 'tami';
-        $password = password_hash('1234', PASSWORD_BCRYPT);;
-        $name = 'Tami Rotem';
-        $auth = 1;
-        return User::insertUser($username, $password, $name, $auth);
-    }
-
     /**
      * update a new user to database
      */

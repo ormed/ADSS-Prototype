@@ -33,7 +33,7 @@ class Patient {
     public static function getPatientResultsById($id) {
         $db = new Database();
         $i = 1;
-        $q = "SELECT `".$_POST["param_". $i]."`";
+        $q = "SELECT `id`, `".$_POST["param_". $i]."`";
         $i++;
         while(isset($_POST['param_'.$i])) {
             $q.=", `".$_POST["param_".$i]."`";
@@ -41,7 +41,6 @@ class Patient {
         }
         $q .= "FROM `patients_results` WHERE id=".$id;
         $result = $db->createQuery($q);
-        debug($result);
         return $result;
     }
 

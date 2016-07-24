@@ -41,13 +41,13 @@ class SimilarCases
         // Build distance matrix
         $distances = array();
         $distances[$id] = SimilarCases::euclideanDistance($data[$id], $id, $data);
-        // Example, target = id 1, getting 10 nearest neighbors
+        // Example, target = $id, getting $numOfNeighbors nearest neighbors
         $neighbors = SimilarCases::getNearestNeighbors($distances, $id, $numOfNeighbors);
         return $neighbors;
     }
 
     public static function KNN_Algorithm_Selected_Parameters($id, $numOfNeighbors) {
-        // Read the csv file that contains patients parameters
+        // Read the csv file that contains patients parameters and retrieve only the selected params
         $data = SimilarCases::getPostParams();
 
         // Build distance matrix
@@ -64,6 +64,7 @@ class SimilarCases
         $results = $db->createQuery($q);
         $result = array();
         foreach($results as $key=>$value) {
+            //$result[$value['id']] = array(0=>$value['id']);
             $result[$value['id']] = array(0=>$value['id'],
                 1=>$value['Min Creatinine'], 2=>$value['Max Creatinine'],
                 3=>$value['Mean Creatinine'], 4=>$value['Median Creatinine'],

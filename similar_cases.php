@@ -160,8 +160,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                         <p></p>
 
-                                        <button type="button" class="btn btn-default" onclick="addConstraint();">Add
-                                        </button>
+                                        <button type="button" class="btn btn-default" onclick="addConstraint();">Add</button>
+                                        <button type="button" class="btn btn-default" onclick="addConstraints();">Add All Options</button>
 
                                         <p></p>
                                         <legend></legend>
@@ -222,6 +222,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <tr>
                                                     <th>ID</th>
                                                     <?php
+                                                    if(!empty($_POST))
                                                     if ($_POST['submit'] == 'searchParams') {
                                                         // Only selected parameters
                                                         $i = 1;
@@ -256,8 +257,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     //*****************************************************//
                                                     ?>
                                                     <tr>
-                                                        <td style="color: firebrick;"><b><?php echo $id; ?></b></td>
                                                         <?php
+                                                        if(!empty($_POST))
                                                         if ($_POST['submit'] == 'searchParams') {
                                                             // Only selected parameters
                                                             $patientParams = Patient::getPatientResultsById($id);
@@ -282,8 +283,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     foreach ($neighbors as $key => $value) {
                                                         ?>
                                                         <tr>
-                                                            <td><?php echo $key; ?></td>
                                                             <?php
+                                                            if(!empty($_POST))
                                                             if ($_POST['submit'] == 'searchParams') {
                                                                 // Only selected parameters
                                                                 $patientParams = Patient::getPatientResultsById($key);
@@ -390,6 +391,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         i++;
                     }
 
+                    function addConstraints() {
+                        if (i == 11) {
+                            alert("Maximum 10 Parameters!");
+                            return;
+                        }
+
+                        // Show search btn
+                        if (i == 1) {
+                            document.getElementById("searchParams").style.display = 'block';
+                        }
+
+                        var constraints = document.getElementById("constraints");
+                        var constraint = constraints.options[constraints.selectedIndex].value;
+                        var table = document.getElementById("preview_table");
+
+                        var options = ["Min", "Max", "Mean", "Median"];
+                        var constraintsCount = 4;
+                        // Check if constraint already exists
+                        for(var deleteCount = 0; deleteCount < 4; deleteCount++) {
+                            for (var j = 1; j < i; j++) {
+                                // Change the # in the table
+                                var tableParam = table.rows[j].cells.item(1).innerHTML;
+                                var tableTarget = table.rows[j].cells.item(2).innerHTML;
+                                if (tableParam == constraint && tableTarget == options[deleteCount]) {
+                                    constraintsCount--;
+                                    delete options[deleteCount];
+                                }
+                            }
+                        }
+
+                        if(constraintsCount == 0) {
+                            alert("Already exist!");
+                            return;
+                        }
+
+                        for(var j=0; j < constraintsCount; j++) {
+                            var row = table.insertRow((i));
+                            var num = row.insertCell(0);
+                            var param = row.insertCell(1);
+                            var target = row.insertCell(2);
+                            var btn = row.insertCell(3);
+                            num.innerHTML = "" + i;
+                            param.innerHTML = constraint;
+                            var check = j;
+                            while(options[check] == undefined) {
+                                check++;
+                            }
+                            target.innerHTML = options[check];
+                            btn.innerHTML = "<button class='btn btn-danger' type='button' id='btn_" + i + "' onclick='deleteConstraint(" + i + ");'><i class='fa fa-trash'></i></button>";
+
+                            // Add hidden input in order to POST it later
+                            var params = document.getElementById('params');
+                            var text = document.createElement('div');
+                            text.innerHTML = "<input type='hidden' id='param_" + i + "' name='param_" + i + "' value='" + options[check] + " " + constraint + "'/>";
+                            params.appendChild(text);
+
+                            i++;
+
+                            if (i == 11) {
+                                return;
+                            }
+                        }
+                    }
+
                     function addFromTo() {
                         var constraints = document.getElementById("constraints");
                         var constraint = constraints.options[constraints.selectedIndex].value;
@@ -457,7 +522,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
 
                         // Don't show search btn
-                        if (i == 0) {
+                        if (i == 2) {
                             document.getElementById("searchParams").style.display = "none";
                         }
 

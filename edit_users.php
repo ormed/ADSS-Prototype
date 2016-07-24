@@ -13,7 +13,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
-    //User::updateUser($_POST["username"], $_POST["name"], $_POST["auth"]);
+    // Parse the $_POST['submit*id*'] to get the *id* only
+    $userId = explode("submit", key(array_intersect_key($_POST, array_flip(preg_grep('/^submit/', array_keys($_POST))))))[1];
+    User::updateUser($_POST["username".$userId], $_POST["name".$userId], $_POST["auth".$userId]);
+    debug($_SESSION);
+    if($_POST["username".$userId] == $_SESSION["user"]) {
+        $_SESSION["name"] = $_POST["name".$userId];
+        $_SESSION["auth"] = $_POST["auth".$userId];
+    }
     $success = "Done!";
 }
 ?>
@@ -74,6 +81,8 @@ if (($_SERVER["REQUEST_METHOD"] == "POST") && empty($err)) {
                                 foreach ($results as $key => $value) {
                                     ?>
                                     <div id="selection<?php echo $key ?>" style="display: none;">
+                                        <input class="form-control" name="username<?php echo $key; ?>" type="hidden"
+                                               value="<?php echo $value["username"]; ?>">
                                         <div class="form-group">
                                             <label>Name:</label>
                                             <input class="form-control" name="name<?php echo $key; ?>" type="text"
